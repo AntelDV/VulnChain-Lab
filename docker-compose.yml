@@ -1,0 +1,17 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: vulnchain-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass123
+      MYSQL_DATABASE: vulnchain_db
+      MYSQL_USER: vulnuser
+      MYSQL_PASSWORD: vulnpass123
+    ports:
+      - "3307:3306"
+    volumes:
+      - vulnchain_data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  vulnchain_data:
