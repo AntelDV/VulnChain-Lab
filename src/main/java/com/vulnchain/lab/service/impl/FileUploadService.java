@@ -1,0 +1,104 @@
+package com.vulnchain.lab.service.impl;
+
+import com.vulnchain.lab.model.FileUpload;
+import com.vulnchain.lab.model.User;
+import com.vulnchain.lab.repository.FileUploadRepository;
+import com.vulnchain.lab.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cglib.core.Local;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class FileUploadService {
+    private final FileUploadRepository fileUploadRepository;
+    private final UserRepository userRepository;
+
+    @Value("${app.upload.dir")
+    private String uploadDir;
+
+    // Blacklist — to bypass on Java/Tomcat
+    private static final List<String> BLACKLIST = List.of("php", "php3", "php4", "php5", "phtml", "phar",
+            "asp", "aspx", "sh", "bash", "py", "rb", "pl");
+
+    public FileUpload uploadFile(MultipartFile file, String username) throws IOException {
+
+        String originalFilename = file.getOriginalFilename();
+
+        // CWE-602: trusting client-side data for security decision
+        String contentType = file.getContentType();
+
+        // Validate 1: null check
+        if (originalFilename == null || originalFilename.isBlank()) {
+            throw new IllegalArgumentException("Filename is required");
+        }
+
+        // Validate 2: check extension against blacklist
+        String extension = getExtension(originalFilename).toLowerCase();
+        if ( BLACKLIST.contains(extension)) {
+            throw new IllegalArgumentException("File type not allowed: " + extension);
+        }
+
+        // Validate 3: Check Content-Type
+        if (contentType != null && contentType.contains("text/html")) {
+            throw new SecurityException("HTML files not allowed");
+        }
+
+        Path uploadPath = Paths.get(uploadDir);
+        if ( !Files.exists(uploadPath)){
+            Files.createDirectories(uploadPath);
+        }
+
+        // Save file
+        Path filePath = uploadPath.resolve(originalFilename);
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        // Save metadata to DB
+        User user = userRepository.findByUsername(username).orElse(null);
+
+        FileUpload fileUpload = new FileUpload();
+        fileUpload.setOriginName(originalFilename);
+        fileUpload.setStoredPath(filePath.toString());
+        fileUpload.setContentType(contentType);
+        fileUpload.setUploadedBy(user);
+        fileUpload.setUploadedAt(LocalDateTime.now());
+
+        return fileUploadRepository.save(fileUpload);
+    }
+
+
+    /**
+     * Get file extension from filename
+     * Simple split — no double extension check
+     */
+
+    private String getExtension(String filename){
+        int dotIndex = filename.lastIndexOf('.');
+        if (dotIndex < 0 ) return "";
+        return filename.substring(dotIndex + 1);
+    }
+
+    public List<FileUpload> getUploadsByUser ( String username) {
+        User user = userRepository.findByUsername(username).orElse(null);
+        if ( user  == null) return List.of();
+        return fileUploadRepository.findByUploadedBy(user);
+    }
+
+    public List<FileUpload> getAllUploads() {
+        return fileUploadRepository.findAll();
+    }
+
+
+
+}

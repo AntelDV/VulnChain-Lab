@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard · VulnChain Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:      #0D1117;
+            --surface: #161B22;
+            --border:  #30363D;
+            --accent:  #F78166;
+            --text:    #E6EDF3;
+            --muted:   #8B949E;
+            --success: #3FB950;
+            --danger:  #F85149;
+            --warning: #D29922;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-brand span { color: var(--accent); }
+
+        .nav-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            background: rgba(247,129,102,0.1);
+            border: 1px solid rgba(247,129,102,0.3);
+            color: var(--accent);
+            padding: 2px 8px;
+            border-radius: 999px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-user {
+            font-size: 13px;
+            color: var(--muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .nav-user strong { color: var(--text); }
+
+        .nav-role {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 500;
+        }
+        .role-admin {
+            background: rgba(248,81,73,0.15);
+            color: var(--danger);
+            border: 1px solid rgba(248,81,73,0.3);
+        }
+        .role-user {
+            background: rgba(63,185,80,0.15);
+            color: var(--success);
+            border: 1px solid rgba(63,185,80,0.3);
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-logout:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* Main layout */
+        .main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 32px 24px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .full-width { grid-column: 1 / -1; }
+
+        /* Card */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-title::before {
+            content: '//';
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+
+        /* Profile fields */
+        .profile-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .profile-field:last-child { border-bottom: none; }
+
+        .field-label {
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 500;
+        }
+
+        .field-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--text);
+            word-break: break-all;
+        }
+
+        .field-value.sensitive {
+            color: var(--accent);
+            background: rgba(247,129,102,0.08);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(247,129,102,0.2);
+        }
+
+        /* IDOR tester */
+        .idor-section { margin-bottom: 20px; }
+
+        .input-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        input[type="number"], input[type="text"] {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            padding: 9px 12px;
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+        input[type="number"] {
+            width: 80px;
+        }
+        input:focus { border-color: var(--accent); }
+
+        .btn {
+            padding: 9px 18px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-primary:hover { filter: brightness(1.1); }
+        .btn-primary:active { transform: scale(0.98); }
+        .btn-secondary {
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover { border-color: var(--accent); }
+        .btn-danger {
+            background: rgba(248,81,73,0.15);
+            color: var(--danger);
+            border: 1px solid rgba(248,81,73,0.3);
+        }
+        .btn-danger:hover { background: rgba(248,81,73,0.25); }
+
+        /* Warning box */
+        .vuln-box {
+            background: rgba(210,153,34,0.08);
+            border: 1px solid rgba(210,153,34,0.3);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+        .vuln-box-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--warning);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .vuln-box-body {
+            font-size: 12px;
+            color: var(--muted);
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.5;
+        }
+
+        /* Response box */
+        .response-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            min-height: 80px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            color: var(--muted);
+        }
+        .response-box.success { 
+            border-color: rgba(63,185,80,0.3);
+            color: var(--success);
+        }
+        .response-box.error { 
+            border-color: rgba(248,81,73,0.3);
+            color: var(--danger);
+        }
+        .response-box.leaked {
+            border-color: rgba(247,129,102,0.4);
+            color: var(--text);
+        }
+
+        /* Chain status */
+        .chain-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chain-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            font-size: 13px;
+            transition: all 0.3s;
+        }
+        .chain-step.done {
+            border-color: rgba(63,185,80,0.4);
+            background: rgba(63,185,80,0.05);
+        }
+        .chain-step.active {
+            border-color: rgba(247,129,102,0.4);
+            background: rgba(247,129,102,0.05);
+        }
+
+        .step-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            flex-shrink: 0;
+            background: var(--border);
+            color: var(--muted);
+        }
+        .chain-step.done .step-icon {
+            background: var(--success);
+            color: #fff;
+        }
+        .chain-step.active .step-icon {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .step-info { flex: 1; }
+        .step-name {
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .step-cwe {
+            font-size: 11px;
+            color: var(--muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .step-status {
+            font-size: 11px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .chain-step.done .step-status { color: var(--success); }
+        .chain-step.active .step-status { color: var(--accent); }
+
+        /* Token display */
+        .token-display {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+            word-break: break-all;
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+
+        .empty-state {
+            color: var(--muted);
+            font-size: 13px;
+            text-align: center;
+            padding: 20px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Skeleton loading */
+        @keyframes shimmer {
+            0% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+            100% { opacity: 0.4; }
+        }
+        .loading { animation: shimmer 1.5s infinite; }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            Vuln<span>Chain</span> Lab
+            <span class="nav-badge">VULNERABLE</span>
+        </div>
+        <div class="nav-right">
+            <span class="nav-user">
+                Logged in as <strong id="navUsername">...</strong>
+            </span>
+            <span class="nav-role" id="navRole">USER</span>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="main">
+
+        <!-- IDOR Tester -->
+        <div class="card full-width">
+            <div class="card-header">
+                <div class="card-title">User Profile Viewer</div>
+            </div>
+
+            <div class="vuln-box">
+                <div class="vuln-box-title">⚠ IDOR Vulnerability · CWE-639</div>
+                <div class="vuln-box-body">
+                    GET /api/v1/users/{id}/profile — no ownership check.<br>
+                    Any authenticated user can view any profile by changing the ID.
+                </div>
+            </div>
+
+            <div class="idor-section">
+                <div class="input-row">
+                    <span style="font-size:13px;color:var(--muted);white-space:nowrap;font-family:'JetBrains Mono',monospace;">
+                        GET /api/v1/users/
+                    </span>
+                    <input type="number" id="targetId" value="1" min="1"/>
+                    <span style="font-size:13px;color:var(--muted);white-space:nowrap;font-family:'JetBrains Mono',monospace;">
+                        /profile
+                    </span>
+                    <button class="btn btn-primary" onclick="fetchProfile()">Send</button>
+                    <button class="btn btn-secondary" onclick="fetchMyProfile()">My Profile</button>
+                </div>
+            </div>
+
+            <div class="response-box" id="profileResponse">
+// Click "Send" to fetch a user profile
+// Try changing the ID to access other users!
+            </div>
+        </div>
+
+        <!-- My Info -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">My Session</div>
+            </div>
+
+            <div class="profile-field">
+                <div class="field-label">Username</div>
+                <div class="field-value" id="myUsername">—</div>
+            </div>
+            <div class="profile-field">
+                <div class="field-label">Role</div>
+                <div class="field-value" id="myRole">—</div>
+            </div>
+            <div class="profile-field">
+                <div class="field-label">JWT Token</div>
+                <div class="token-display" id="myToken">—</div>
+            </div>
+
+            <div style="margin-top:16px;">
+                <button class="btn btn-danger" onclick="window.location.href='/admin.html'" style="width:100%">
+                    → Admin Panel (try to access)
+                </button>
+            </div>
+        </div>
+
+        <!-- Exploit Chain Status -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">Exploit Chain</div>
+            </div>
+
+            <div class="chain-steps">
+                <div class="chain-step done" id="step-login">
+                    <div class="step-icon">✓</div>
+                    <div class="step-info">
+                        <div class="step-name">Login</div>
+                        <div class="step-cwe">POST /api/v1/auth/login</div>
+                    </div>
+                    <div class="step-status">DONE</div>
+                </div>
+
+                <div class="chain-step active" id="step-idor">
+                    <div class="step-icon">2</div>
+                    <div class="step-info">
+                        <div class="step-name">IDOR → Leak apiKey</div>
+                        <div class="step-cwe">CWE-639 · GET /users/{id}</div>
+                    </div>
+                    <div class="step-status" id="idor-status">PENDING</div>
+                </div>
+
+                <div class="chain-step" id="step-jwt">
+                    <div class="step-icon">3</div>
+                    <div class="step-info">
+                        <div class="step-name">JWT alg:none Bypass</div>
+                        <div class="step-cwe">CWE-347 · forge token</div>
+                    </div>
+                    <div class="step-status" id="jwt-status">—</div>
+                </div>
+
+                <div class="chain-step" id="step-rce">
+                    <div class="step-icon">4</div>
+                    <div class="step-info">
+                        <div class="step-name">File Upload → RCE</div>
+                        <div class="step-cwe">CWE-434 · webshell</div>
+                    </div>
+                    <div class="step-status">Week 3</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+        const role = localStorage.getItem('role');
+
+        // Redirect if not logged in
+        if (!token) {
+            window.location.href = '/index.html';
+        }
+
+        // Fill navbar
+        document.getElementById('navUsername').textContent = username || '?';
+        document.getElementById('myUsername').textContent = username || '?';
+        document.getElementById('myRole').textContent = role || '?';
+        document.getElementById('myToken').textContent = token || '?';
+
+        const roleEl = document.getElementById('navRole');
+        roleEl.textContent = role;
+        roleEl.className = 'nav-role ' + (role === 'ADMIN' ? 'role-admin' : 'role-user');
+
+        // Fetch my profile on load
+        fetchMyProfile();
+
+        async function fetchProfile() {
+            const id = document.getElementById('targetId').value;
+            const box = document.getElementById('profileResponse');
+
+            box.className = 'response-box loading';
+            box.textContent = `// Fetching GET /api/v1/users/${id}/profile ...`;
+
+            try {
+                const resp = await fetch(`/api/v1/users/${id}/profile`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const data = await resp.json();
+
+                if (resp.ok) {
+                    // Check if accessing OTHER user's profile = IDOR!
+                    const isIDOR = data.username !== username;
+
+                    box.className = 'response-box ' + (isIDOR ? 'leaked' : 'success');
+                    box.textContent = JSON.stringify(data, null, 2);
+
+                    if (isIDOR) {
+                        box.textContent += '\n\n⚠ IDOR! Accessing another user\'s profile!';
+                        if (data.apiKey) {
+                            box.textContent += `\n💀 Leaked apiKey: ${data.apiKey}`;
+                        }
+                        // Mark IDOR step as done
+                        markStepDone('step-idor', 'idor-status');
+                        markStepActive('step-jwt');
+                    }
+                } else {
+                    box.className = 'response-box error';
+                    box.textContent = `// Error ${resp.status}\n${JSON.stringify(data, null, 2)}`;
+                }
+
+            } catch (err) {
+                box.className = 'response-box error';
+                box.textContent = `// Connection error: ${err.message}`;
+            }
+        }
+
+        function fetchMyProfile() {
+            // Find my ID by trying common IDs
+            // In real attack — enumerate from 1
+            const myId = role === 'ADMIN' ? 1 : 2;
+            document.getElementById('targetId').value = myId;
+            fetchProfile();
+        }
+
+        function markStepDone(stepId, statusId) {
+            const step = document.getElementById(stepId);
+            step.className = 'chain-step done';
+            step.querySelector('.step-icon').textContent = '✓';
+            if (statusId) document.getElementById(statusId).textContent = 'DONE';
+        }
+
+        function markStepActive(stepId) {
+            const step = document.getElementById(stepId);
+            step.className = 'chain-step active';
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/index.html';
+        }
+    </script>
+
+</body>
+</html>

