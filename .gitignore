@@ -33,13 +33,15 @@ build/
 ### VS Code ###
 .vscode/
 
+# Credentials
 src/main/resources/application.properties
 
 # OS
 .DS_Store
 
-echo "exploit/*.py" >> .gitignoreexploit/
+exploit/
+
+# Sensitive files
 ${app.upload.dir}/
 *.jsp
 *.war
-target/
