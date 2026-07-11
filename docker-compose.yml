@@ -12,6 +12,27 @@ services:
     volumes:
       - vulnchain_data:/var/lib/mysql
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uvulnuser", "-pvulnpass123"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+
+  tomcat:
+    build: .
+    container_name: vulnchain-tomcat
+    ports:
+      - "8090:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/vulnchain_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - SPRING_DATASOURCE_USERNAME=vulnuser
+      - SPRING_DATASOURCE_PASSWORD=vulnpass123
+      - JAVA_TOOL_OPTIONS=-Dapp.upload.dir=/usr/local/tomcat/webapps/ROOT/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy  # ← chờ MySQL healthy mới start Tomcat
+    restart: unless-stopped
 
 volumes:
   vulnchain_data:

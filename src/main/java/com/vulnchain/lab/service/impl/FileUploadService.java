@@ -25,7 +25,7 @@ public class FileUploadService {
     private final FileUploadRepository fileUploadRepository;
     private final UserRepository userRepository;
 
-    @Value("${app.upload.dir")
+    @Value("${app.upload.dir}")
     private String uploadDir;
 
     // Blacklist — to bypass on Java/Tomcat
@@ -44,6 +44,8 @@ public class FileUploadService {
             throw new IllegalArgumentException("Filename is required");
         }
 
+        String sanitizerFileName = sanitizeFilename(originalFilename);
+
         // Validate 2: check extension against blacklist
         String extension = getExtension(originalFilename).toLowerCase();
         if ( BLACKLIST.contains(extension)) {
@@ -61,7 +63,7 @@ public class FileUploadService {
         }
 
         // Save file
-        Path filePath = uploadPath.resolve(originalFilename);
+        Path filePath = uploadPath.resolve(sanitizerFileName);
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
         // Save metadata to DB
@@ -99,6 +101,24 @@ public class FileUploadService {
         return fileUploadRepository.findAll();
     }
 
+    private String sanitizeFilename(String filename) {
+        if (filename == null) return null;
+
+        if (filename.contains("../") || filename.contains("..\\")
+                || filename.startsWith("/")) {
+            throw new SecurityException("Path traversal detected!");
+        }
+
+        try {
+            filename = java.net.URLDecoder.decode(
+                    filename, java.nio.charset.StandardCharsets.UTF_8);
+        } catch (Exception e) {
+        }
+
+        filename = filename.replace("../", "").replace("..\\", "");
+
+        return filename;
+    }
 
 
 }
