@@ -37,3 +37,9 @@ src/main/resources/application.properties
 
 # OS
 .DS_Store
+
+echo "exploit/*.py" >> .gitignoreexploit/
+${app.upload.dir}/
+*.jsp
+*.war
+target/
