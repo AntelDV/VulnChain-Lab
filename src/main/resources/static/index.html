@@ -3,285 +3,478 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VulnChain Lab</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <title>v4nD Tech - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         :root {
-            --bg:      #0D1117;
-            --surface: #161B22;
-            --border:  #30363D;
-            --accent:  #F78166;
-            --text:    #E6EDF3;
-            --muted:   #8B949E;
-            --success: #3FB950;
-            --danger:  #F85149;
+            --bg:           #FFF8F0;
+            --card:         #FFFFFF;
+            --orange:       #F97316;
+            --orange-light: #FED7AA;
+            --orange-dark:  #C2410C;
+            --blue:         #38BDF8;
+            --blue-light:   #BAE6FD;
+            --text:         #1E293B;
+            --muted:        #64748B;
+            --border:       #E2E8F0;
+            --success:      #22C55E;
+            --danger:       #EF4444;
+            --radius:       12px;
         }
 
         body {
             background: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', sans-serif;
+            background-image:
+                    radial-gradient(circle at 20% 20%, rgba(254,215,170,0.3) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(186,230,253,0.3) 0%, transparent 50%);
             min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            color: var(--text);
             display: flex;
             flex-direction: column;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--card);
+            border-bottom: 2px solid var(--border);
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 16px;
+            color: var(--orange);
+        }
+
+        .nav-logo .blue { color: var(--blue); }
+
+        .nav-tagline {
+            font-size: 13px;
+            color: var(--muted);
+            border-left: 2px solid var(--border);
+            padding-left: 12px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-link {
+            font-size: 14px;
+            color: var(--muted);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .nav-link:hover { background: var(--bg); color: var(--text); }
+
+        /* Main */
+        .main {
+            flex: 1;
+            display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1rem;
+            padding: 40px 16px;
         }
 
-        /* Header badge */
-        .lab-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(247,129,102,0.1);
-            border: 1px solid rgba(247,129,102,0.3);
-            color: var(--accent);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            padding: 4px 12px;
-            border-radius: 999px;
-            margin-bottom: 24px;
-            letter-spacing: 0.08em;
-        }
-        .lab-badge::before {
-            content: '';
-            width: 6px; height: 6px;
-            background: var(--accent);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
+        .login-wrapper {
+            width: 100%;
+            max-width: 440px;
         }
 
-        h1 {
-            font-size: 28px;
-            font-weight: 600;
-            margin-bottom: 8px;
-            letter-spacing: -0.5px;
-        }
-        h1 span { color: var(--accent); }
-
-        .subtitle {
-            color: var(--muted);
-            font-size: 14px;
+        /* Hero */
+        .hero-text {
+            text-align: center;
             margin-bottom: 32px;
-            font-family: 'JetBrains Mono', monospace;
         }
+
+        .hero-title {
+            font-family: 'Press Start 2P', monospace;
+            font-size: clamp(18px, 4vw, 24px);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .hero-title .orange { color: var(--orange); }
+        .hero-title .blue   { color: var(--blue); }
 
         /* Card */
         .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 32px;
-            width: 100%;
-            max-width: 400px;
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px 28px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06), 4px 4px 0 var(--orange-light);
         }
 
-        .card-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 24px;
+        /* Tabs */
+        .tabs {
             display: flex;
-            align-items: center;
-            gap: 8px;
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 28px;
+            border: 1px solid var(--border);
         }
-        .card-title::before {
-            content: '//';
-            color: var(--accent);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all 0.2s;
         }
+
+        .tab-btn.active {
+            background: var(--card);
+            color: var(--orange);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            border: 1px solid var(--orange-light);
+        }
+
+        /* Tab panels */
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
 
         /* Form */
-        .form-group { margin-bottom: 16px; }
+        .form-group { margin-bottom: 20px; }
 
         label {
             display: block;
-            font-size: 12px;
-            font-weight: 500;
+            font-size: 14px;
+            font-weight: 600;
             color: var(--muted);
-            margin-bottom: 6px;
             text-transform: uppercase;
-            letter-spacing: 0.06em;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
         }
 
-        input {
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
             width: 100%;
-            background: var(--bg);
-            border: 1px solid var(--border);
+            padding: 13px 16px;
+            border: 2px solid var(--border);
             border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
             color: var(--text);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 14px;
-            padding: 10px 14px;
+            background: var(--bg);
             outline: none;
             transition: border-color 0.2s;
         }
-        input:focus { border-color: var(--accent); }
+
+        input:focus { border-color: var(--orange); }
         input::placeholder { color: var(--muted); }
+
+        .input-hint {
+            font-size: 13px;
+            color: var(--muted);
+            margin-top: 6px;
+        }
+
+        /* Forgot row */
+        .forgot-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+            margin-top: -8px;
+        }
+
+        .forgot-link {
+            font-size: 14px;
+            color: var(--blue);
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .forgot-link:hover { text-decoration: underline; }
 
         /* Button */
         .btn {
             width: 100%;
-            padding: 11px;
+            padding: 14px;
             border: none;
             border-radius: 8px;
             font-family: 'Inter', sans-serif;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            margin-top: 8px;
-        }
-        .btn-primary {
-            background: var(--accent);
-            color: #fff;
-        }
-        .btn-primary:hover { filter: brightness(1.1); }
-        .btn-primary:active { transform: scale(0.98); }
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Alert */
-        .alert {
-            padding: 10px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            margin-top: 16px;
-            display: none;
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .alert.error {
-            background: rgba(248,81,73,0.1);
-            border: 1px solid rgba(248,81,73,0.3);
-            color: var(--danger);
-            display: block;
-        }
-        .alert.success {
-            background: rgba(63,185,80,0.1);
-            border: 1px solid rgba(63,185,80,0.3);
-            color: var(--success);
-            display: block;
-        }
-
-        /* Divider */
-        .divider {
-            border: none;
-            border-top: 1px solid var(--border);
-            margin: 24px 0;
-        }
-
-        /* Quick login hints */
-        .hint-title {
-            font-size: 11px;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-bottom: 8px;
-        }
-        .hint-row {
             display: flex;
+            align-items: center;
+            justify-content: center;
             gap: 8px;
         }
-        .hint-btn {
-            flex: 1;
-            padding: 8px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: var(--muted);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
+
+        .btn-primary {
+            background: var(--orange);
+            color: #fff;
+            border: 2px solid var(--orange);
+            box-shadow: 3px 3px 0 var(--orange-dark);
         }
-        .hint-btn:hover {
-            border-color: var(--accent);
-            color: var(--accent);
+        .btn-primary:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0 var(--orange-dark);
+        }
+        .btn-primary:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--orange-dark);
+        }
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
+        /* Forgot panel */
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--blue);
+            font-size: 14px;
+            cursor: pointer;
+            padding: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .back-btn:hover { text-decoration: underline; }
+
+        .forgot-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .forgot-desc {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 18px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 280px;
+            animation: slideIn 0.3s ease;
+        }
+        .toast.success { border-color: var(--success); }
+        .toast.error   { border-color: var(--danger); }
+
+        @keyframes slideIn {
+            from { transform: translateX(110%); opacity: 0; }
+            to   { transform: translateX(0);    opacity: 1; }
+        }
+
+        /* Spinner */
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
         /* Footer */
-        .footer {
-            margin-top: 24px;
-            font-size: 12px;
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 13px;
             color: var(--muted);
             font-family: 'JetBrains Mono', monospace;
-            text-align: center;
+        }
+        footer span { color: var(--orange); }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .card { padding: 24px 18px; }
+            .nav-tagline { display: none; }
         }
     </style>
 </head>
 <body>
 
-<div class="lab-badge">VULNERABLE LAB · EDUCATIONAL USE ONLY</div>
+<div class="toast-container" id="toastContainer"></div>
 
-<h1>Vuln<span>Chain</span> Lab</h1>
-<p class="subtitle">API Exploit Chain · IDOR → Auth Bypass → RCE</p>
-
-<div class="card">
-    <div class="card-title">Authentication</div>
-
-    <div class="form-group">
-        <label>Username</label>
-        <input type="text" id="username" placeholder="Enter username" autocomplete="off"/>
+<!-- Navbar -->
+<nav class="navbar">
+    <a class="nav-brand" href="#">
+        <span class="nav-logo">v4n<span class="blue">D</span></span>
+        <span class="nav-tagline">IT Hardware Distribution</span>
+    </a>
+    <div class="nav-links">
+        <a class="nav-link" href="#">About</a>
+        <a class="nav-link" href="#">Contact</a>
     </div>
+</nav>
 
-    <div class="form-group">
-        <label>Password</label>
-        <input type="password" id="password" placeholder="Enter password"/>
-    </div>
+<!-- Main -->
+<main class="main">
+    <div class="login-wrapper">
 
-    <button class="btn btn-primary" id="loginBtn" onclick="login()">
-        Sign In
-    </button>
-
-    <div class="alert" id="alert"></div>
-
-    <hr class="divider">
-
-    <div class="hint-title">Quick login</div>
-    <div class="hint-row">
-        <div class="hint-btn" onclick="fillCredentials('admin','admin123')">
-            admin / admin123
+        <!-- Hero -->
+        <div class="hero-text">
+            <div class="hero-title">
+                <span class="orange">v4n</span><span class="blue">D</span> Tech
+            </div>
         </div>
-        <div class="hint-btn" onclick="fillCredentials('duong','duong123')">
-            duong / duong123
-        </div>
-    </div>
-</div>
 
-<div class="footer">
-    VulnChain-Lab · Spring Boot 4.x · Java 25
-</div>
+        <!-- Auth Card -->
+        <div class="card" id="authCard">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('login')">Sign In</button>
+                <button class="tab-btn" onclick="switchTab('register')">Sign Up</button>
+            </div>
+
+            <!-- Login -->
+            <div class="tab-panel active" id="panel-login">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="login-username" placeholder="Enter your username" autocomplete="off"/>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password"/>
+                </div>
+                <div class="forgot-row">
+                    <a class="forgot-link" onclick="showForgot()">Forgot password?</a>
+                </div>
+                <button class="btn btn-primary" id="loginBtn" onclick="login()">Sign In</button>
+            </div>
+
+            <!-- Register -->
+            <div class="tab-panel" id="panel-register">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="reg-username" placeholder="Choose a username"/>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="reg-email" placeholder="your@email.com"/>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="reg-password" placeholder="Min. 6 characters"/>
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="reg-confirm" placeholder="Repeat your password"/>
+                    <div class="input-hint">Account will be created with USER role</div>
+                </div>
+                <button class="btn btn-primary" id="registerBtn" onclick="register()">Create Account</button>
+            </div>
+        </div>
+
+        <!-- Forgot Card -->
+        <div class="card" id="forgotCard" style="display:none;">
+            <button class="back-btn" onclick="hideForgot()">&#8592; Back to Sign In</button>
+            <div class="forgot-title">Reset Password</div>
+            <div class="forgot-desc">Enter your email and we'll send a reset link.</div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="forgot-email" placeholder="your@email.com"/>
+            </div>
+            <button class="btn btn-primary" onclick="sendReset()">Send Reset Link</button>
+        </div>
+
+    </div>
+</main>
+
+<footer>
+    &copy; 2026 <span>v4nD Tech</span> &middot; All rights reserved
+</footer>
 
 <script>
-    function fillCredentials(user, pass) {
-        document.getElementById('username').value = user;
-        document.getElementById('password').value = pass;
+    // Redirect if already logged in
+    if (localStorage.getItem('token')) {
+        window.location.href = '/products.html';
+    }
+
+    function switchTab(tab) {
+        document.querySelectorAll('.tab-btn').forEach((b, i) => {
+            b.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
+        });
+        document.getElementById('panel-login').classList.toggle('active', tab === 'login');
+        document.getElementById('panel-register').classList.toggle('active', tab === 'register');
+    }
+
+    function showForgot() {
+        document.getElementById('authCard').style.display = 'none';
+        document.getElementById('forgotCard').style.display = 'block';
+    }
+
+    function hideForgot() {
+        document.getElementById('forgotCard').style.display = 'none';
+        document.getElementById('authCard').style.display = 'block';
+    }
+
+    function sendReset() {
+        const email = document.getElementById('forgot-email').value.trim();
+        if (!email) { showToast('Please enter your email', 'error'); return; }
+        showToast('Reset link sent to ' + email, 'success');
+        setTimeout(hideForgot, 2000);
     }
 
     async function login() {
         const btn = document.getElementById('loginBtn');
-        const alert = document.getElementById('alert');
-        const username = document.getElementById('username').value.trim();
-        const password = document.getElementById('password').value.trim();
+        const username = document.getElementById('login-username').value.trim();
+        const password = document.getElementById('login-password').value;
 
         if (!username || !password) {
-            showAlert('Username and password are required', 'error');
+            showToast('Please fill in all fields', 'error');
             return;
         }
 
         btn.disabled = true;
-        btn.textContent = 'Authenticating...';
-        alert.className = 'alert';
+        btn.innerHTML = '<div class="spinner"></div> Signing in...';
 
         try {
             const resp = await fetch('/api/v1/auth/login', {
@@ -289,42 +482,86 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
             });
-
             const data = await resp.json();
 
             if (resp.ok) {
-                // Save token + user info
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('username', data.username);
                 localStorage.setItem('role', data.role);
-
-                showAlert('Login successful! Redirecting...', 'success');
-                setTimeout(() => {
-                    window.location.href = '/dashboard.html';
-                }, 800);
+                showToast('Welcome back, ' + data.username + '!', 'success');
+                setTimeout(() => window.location.href = '/products.html', 900);
             } else {
-                showAlert(data.message || 'Invalid credentials', 'error');
+                showToast(data.message || 'Invalid credentials', 'error');
             }
-
-        } catch (err) {
-            showAlert('Connection error', 'error');
+        } catch (e) {
+            showToast('Connection error', 'error');
         } finally {
             btn.disabled = false;
-            btn.textContent = 'Sign In';
+            btn.innerHTML = 'Sign In';
         }
     }
 
-    function showAlert(msg, type) {
-        const el = document.getElementById('alert');
-        el.textContent = msg;
-        el.className = `alert ${type}`;
+    async function register() {
+        const btn = document.getElementById('registerBtn');
+        const username = document.getElementById('reg-username').value.trim();
+        const email    = document.getElementById('reg-email').value.trim();
+        const password = document.getElementById('reg-password').value;
+        const confirm  = document.getElementById('reg-confirm').value;
+
+        if (!username || !email || !password) {
+            showToast('Please fill in all fields', 'error');
+            return;
+        }
+        if (password !== confirm) {
+            showToast('Passwords do not match', 'error');
+            return;
+        }
+        if (password.length < 6) {
+            showToast('Password must be at least 6 characters', 'error');
+            return;
+        }
+
+        btn.disabled = true;
+        btn.innerHTML = '<div class="spinner"></div> Creating account...';
+
+        try {
+            const resp = await fetch('/api/v1/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+            const data = await resp.json();
+
+            if (resp.status === 201) {
+                showToast('Account created! Please sign in', 'success');
+                setTimeout(() => switchTab('login'), 1200);
+            } else {
+                showToast(data.message || 'Registration failed', 'error');
+            }
+        } catch (e) {
+            showToast('Connection error', 'error');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = 'Create Account';
+        }
     }
 
-    // Enter key support
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Enter') login();
+    function showToast(msg, type) {
+        type = type || 'success';
+        const icon = type === 'success' ? '&#10003;' : '&#10007;';
+        const el = document.createElement('div');
+        el.className = 'toast ' + type;
+        el.innerHTML = '<span>' + icon + '</span><span>' + msg + '</span>';
+        document.getElementById('toastContainer').appendChild(el);
+        setTimeout(function() { el.remove(); }, 3500);
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key !== 'Enter') return;
+        const active = document.querySelector('.tab-panel.active');
+        if (active && active.id === 'panel-login') login();
+        else register();
     });
 </script>
-
 </body>
 </html>

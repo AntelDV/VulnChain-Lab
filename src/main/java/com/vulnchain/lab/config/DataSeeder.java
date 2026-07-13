@@ -44,10 +44,18 @@ public class DataSeeder implements CommandLineRunner {
         userRepository.save(user);
 
         // Products
-        productRepository.save(new Product(null, "Samsung S25", "Latest flagship smartphone", 999.0, "phone"));
-        productRepository.save(new Product(null, "Dell Latitude", "Premium business laptop", 1200.0, "laptop"));
-        productRepository.save(new Product(null, "Asus ROG Strix G18 2025", "High-performance gaming laptop", 2339.0, "laptop"));
-        productRepository.save(new Product(null, "ALFA AWUS036AXML", "WiFi 6E Tri-band USB Adapter", 69.99, "network"));
+        productRepository.save(new Product(null, "Samsung S25", "Latest flagship smartphone", 999.0, "phone", "Phone", 100));
+        productRepository.save(new Product(null, "Dell Latitude", "Premium business laptop", 1200.0, "laptop", "Laptop", 100));
+        productRepository.save(new Product(null, "Asus ROG Strix G18 2025", "High-performance gaming laptop", 2339.0, "laptop", "Laptop", 100));
+        productRepository.save(new Product(null, "ALFA AWUS036AXML", "WiFi 6E Tri-band USB Adapter", 69.99, "network", "Network", 100));
+        productRepository.save(new Product(null, "Laptop Dell XPS 15", "High-performance laptop for professionals", 1299.0, "Laptop", "Laptop", 100));
+        productRepository.save(new Product(null, "Server HPE ProLiant DL380", "Enterprise 2U rack server for data centers", 3499.0, "Server", "Server", 100));
+        productRepository.save(new Product(null, "Cisco Switch SG350-28", "24-port managed gigabit switch with PoE+", 899.0, "Network", "Network", 100));
+        productRepository.save(new Product(null, "Samsung SSD 870 EVO 2TB", "SATA SSD with up to 560 MB/s read speed", 149.0, "Storage", "Storage", 100));
+        productRepository.save(new Product(null, "RAM Corsair Vengeance 32GB DDR5", "High-speed DDR5 memory kit for gaming and workstations", 129.0, "Component", "Component", 100));
+        productRepository.save(new Product(null, "KVM Switch 8-Port", "Control 8 computers from single keyboard and mouse", 199.0, "Peripheral", "Peripheral", 100));
+        productRepository.save(new Product(null, "UPS APC Smart-UPS 1500VA", "Line-interactive UPS with LCD display", 299.0, "Power", "Power", 100));
+        productRepository.save(new Product(null, "WiFi 6E Access Point", "Tri-band wireless AP for enterprise environments", 399.0, "Network", "Network", 100));
 
         System.out.println("=== VulnChain Lab: Data seeded successfully! ===");
         System.out.println("Admin: admin / admin123");

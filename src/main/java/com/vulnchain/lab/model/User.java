@@ -25,7 +25,7 @@ public class User {
     private String email;
 
     @Column ( name = "api_key")
-    private String apiKey; // IDOR leak
+    private String apiKey;
 
     @Enumerated(EnumType.STRING)
     @Column( nullable = false)
@@ -34,4 +34,14 @@ public class User {
     public enum Role {
         USER, ADMIN
     }
+
+    @Column(name = "full_name")
+    private String fullName;
+
+    @Column(name = "company")
+    private String company;
+
+    @Column(name = "phone")
+    private String phone;
+
 }

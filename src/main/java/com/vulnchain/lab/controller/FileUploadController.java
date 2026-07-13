@@ -20,13 +20,22 @@ public class FileUploadController {
     private final FileUploadService fileUploadService;
 
     @PostMapping("/upload")
-    public ResponseEntity<Map<String, Object>> uploadFile (
-            @RequestParam("file") MultipartFile file, Authentication auth
-    ) {
+    public ResponseEntity<Map<String, Object>> uploadFile(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "filename", required = false) String customFilename,
+            Authentication auth) {
+
         Map<String, Object> response = new HashMap<>();
+
         try {
             String username = auth.getName();
-            FileUpload saved = fileUploadService.uploadFile(file, username);
+            FileUpload saved;
+
+            if (customFilename != null && !customFilename.isBlank()) {
+                saved = fileUploadService.uploadFileWithName(file, customFilename, username);
+            } else {
+                saved = fileUploadService.uploadFile(file, username);
+            }
 
             response.put("success", true);
             response.put("message", "File uploaded successfully");
@@ -40,9 +49,10 @@ public class FileUploadController {
             response.put("success", false);
             response.put("message", e.getMessage());
             return ResponseEntity.status(403).body(response);
-        } catch (Exception ex) {
+
+        } catch (Exception e) {
             response.put("success", false);
-            response.put("message", "Upload failed: " + ex.getMessage());
+            response.put("message", "Upload failed: " + e.getMessage());
             return ResponseEntity.status(500).body(response);
         }
     }

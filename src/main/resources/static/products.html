@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>v4nD Tech - Products</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg:           #FFF8F0;
+            --card:         #FFFFFF;
+            --orange:       #F97316;
+            --orange-light: #FED7AA;
+            --orange-dark:  #C2410C;
+            --blue:         #38BDF8;
+            --blue-light:   #BAE6FD;
+            --text:         #1E293B;
+            --muted:        #64748B;
+            --border:       #E2E8F0;
+            --success:      #22C55E;
+            --danger:       #EF4444;
+            --radius:       12px;
+        }
+
+        body {
+            background: var(--bg);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            color: var(--text);
+        }
+
+        /* Navbar */
+        .navbar {
+            background: var(--card);
+            border-bottom: 2px solid var(--border);
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo {
+            font-family: 'Press Start 2P', monospace;
+            font-size: 16px;
+            color: var(--orange);
+        }
+        .nav-logo .blue { color: var(--blue); }
+
+        .nav-tagline {
+            font-size: 13px;
+            color: var(--muted);
+            border-left: 2px solid var(--border);
+            padding-left: 12px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-link {
+            font-size: 14px;
+            color: var(--muted);
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-link:hover { background: var(--bg); color: var(--text); }
+        .nav-link.active { color: var(--orange); font-weight: 600; }
+
+        .nav-admin {
+            background: rgba(239,68,68,0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239,68,68,0.3);
+            font-size: 13px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .nav-admin:hover { background: rgba(239,68,68,0.2); }
+
+        .nav-user {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .btn-logout {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
+
+        /* Hero banner */
+        .hero {
+            background: linear-gradient(135deg, var(--orange) 0%, #FB923C 50%, var(--blue) 100%);
+            padding: 40px 24px;
+            color: white;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-family: 'Press Start 2P', monospace;
+            font-size: clamp(14px, 3vw, 20px);
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .hero p {
+            font-size: 15px;
+            opacity: 0.9;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Main content */
+        .main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 32px 24px;
+        }
+
+        /* Search + filter bar */
+        .search-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .search-input-wrap {
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            color: var(--muted);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 13px 16px 13px 44px;
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            color: var(--text);
+            background: var(--card);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .search-input:focus { border-color: var(--orange); }
+        .search-input::placeholder { color: var(--muted); }
+
+        .btn-search {
+            padding: 13px 24px;
+            background: var(--orange);
+            color: white;
+            border: 2px solid var(--orange);
+            border-radius: var(--radius);
+            font-family: 'Inter', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 3px 3px 0 var(--orange-dark);
+            white-space: nowrap;
+        }
+        .btn-search:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0 var(--orange-dark);
+        }
+
+        /* Category pills */
+        .category-pills {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .pill {
+            padding: 8px 18px;
+            border: 2px solid var(--border);
+            border-radius: 999px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--muted);
+            background: var(--card);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pill:hover { border-color: var(--orange); color: var(--orange); }
+        .pill.active {
+            background: var(--orange);
+            border-color: var(--orange);
+            color: white;
+        }
+
+        /* Results info */
+        .results-info {
+            font-size: 14px;
+            color: var(--muted);
+            margin-bottom: 20px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .results-info span { color: var(--orange); font-weight: 600; }
+
+        /* Product grid */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        /* Product card */
+        .product-card {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .product-card:hover {
+            border-color: var(--orange);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(249,115,22,0.15), 4px 4px 0 var(--orange-light);
+        }
+
+        .product-img {
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 64px;
+            background: linear-gradient(135deg, var(--bg) 0%, var(--orange-light) 100%);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .product-body {
+            padding: 16px;
+        }
+
+        .product-category {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--blue);
+            margin-bottom: 6px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .product-name {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+
+        .product-desc {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 14px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .product-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--orange);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .btn-detail {
+            padding: 8px 16px;
+            background: var(--bg);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-detail:hover {
+            border-color: var(--orange);
+            color: var(--orange);
+            background: var(--orange-light);
+        }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--muted);
+        }
+        .empty-state .icon { font-size: 56px; margin-bottom: 16px; }
+        .empty-state h3 { font-size: 18px; margin-bottom: 8px; color: var(--text); }
+        .empty-state p { font-size: 14px; }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.4);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.open { display: flex; }
+
+        .modal {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2), 4px 4px 0 var(--orange-light);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: 1px solid var(--border);
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-close:hover { border-color: var(--danger); color: var(--danger); }
+
+        .modal-icon { font-size: 56px; margin-bottom: 16px; text-align: center; }
+        .modal-category {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: var(--blue);
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 6px;
+        }
+        .modal-name { font-size: 22px; font-weight: 700; margin-bottom: 10px; }
+        .modal-desc { font-size: 15px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+
+        .modal-specs {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 20px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+        }
+        .spec-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .spec-row:last-child { border-bottom: none; }
+        .spec-key { color: var(--muted); }
+        .spec-val { color: var(--text); font-weight: 500; }
+
+        .modal-price {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--orange);
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 16px;
+        }
+
+        .btn-contact {
+            width: 100%;
+            padding: 14px;
+            background: var(--orange);
+            color: white;
+            border: 2px solid var(--orange);
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 3px 3px 0 var(--orange-dark);
+            transition: all 0.2s;
+        }
+        .btn-contact:hover {
+            transform: translate(-1px,-1px);
+            box-shadow: 4px 4px 0 var(--orange-dark);
+        }
+
+        /* Toast */
+        .toast-container {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 14px 18px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 280px;
+            animation: slideIn 0.3s ease;
+        }
+        .toast.success { border-color: var(--success); }
+        .toast.error   { border-color: var(--danger); }
+
+        @keyframes slideIn {
+            from { transform: translateX(110%); opacity: 0; }
+            to   { transform: translateX(0);    opacity: 1; }
+        }
+
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, var(--border) 25%, var(--bg) 50%, var(--border) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+        @keyframes shimmer {
+            0%   { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        footer {
+            text-align: center;
+            padding: 24px;
+            font-size: 13px;
+            color: var(--muted);
+            font-family: 'JetBrains Mono', monospace;
+            border-top: 1px solid var(--border);
+            margin-top: 48px;
+        }
+        footer span { color: var(--orange); }
+
+        @media (max-width: 640px) {
+            .nav-tagline { display: none; }
+            .nav-user { display: none; }
+            .product-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Navbar -->
+<nav class="navbar">
+    <a class="nav-brand" href="/products.html">
+        <span class="nav-logo">v4n<span class="blue">D</span></span>
+        <span class="nav-tagline">IT Hardware Distribution</span>
+    </a>
+    <div class="nav-links">
+        <a class="nav-link active" href="/products.html">&#128230; Products</a>
+        <a class="nav-link" href="/profile.html">&#128100; Profile</a>
+        <a class="nav-link nav-admin" href="/admin.html" id="adminLink" style="display:none">&#128737; Admin</a>
+        <div class="nav-user" id="navUser">&#128100; ...</div>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+    <h1>Premium IT Equipment</h1>
+    <p>Enterprise-grade hardware for modern infrastructure needs</p>
+</div>
+
+<!-- Main -->
+<main class="main">
+
+    <!-- Search bar -->
+    <div class="search-bar">
+        <div class="search-input-wrap">
+            <span class="search-icon">&#128269;</span>
+            <input
+                    class="search-input"
+                    id="searchInput"
+                    type="text"
+                    placeholder="Search products..."
+                    onkeydown="if(event.key==='Enter') doSearch()"
+            />
+        </div>
+        <button class="btn-search" onclick="doSearch()">Search</button>
+    </div>
+
+    <!-- Category pills -->
+    <div class="category-pills" id="categoryPills">
+        <div class="pill active" onclick="filterCategory('all', this)">All</div>
+        <div class="pill" onclick="filterCategory('Laptop', this)">&#128187; Laptop</div>
+        <div class="pill" onclick="filterCategory('Server', this)">&#128421; Server</div>
+        <div class="pill" onclick="filterCategory('Network', this)">&#128225; Network</div>
+        <div class="pill" onclick="filterCategory('Storage', this)">&#128190; Storage</div>
+        <div class="pill" onclick="filterCategory('Component', this)">&#9881; Component</div>
+        <div class="pill" onclick="filterCategory('Peripheral', this)">&#128421; Peripheral</div>
+        <div class="pill" onclick="filterCategory('Power', this)">&#9889; Power</div>
+    </div>
+
+    <!-- Results info -->
+    <div class="results-info" id="resultsInfo">Loading products...</div>
+
+    <!-- Product grid -->
+    <div class="product-grid" id="productGrid">
+        <!-- skeleton placeholders -->
+        <div style="height:280px;" class="skeleton"></div>
+        <div style="height:280px;" class="skeleton"></div>
+        <div style="height:280px;" class="skeleton"></div>
+    </div>
+
+</main>
+
+<!-- Product modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" id="modalContent">
+        <button class="modal-close" onclick="closeModalBtn()">&#10005;</button>
+        <div class="modal-icon" id="mIcon"></div>
+        <div class="modal-category" id="mCategory"></div>
+        <div class="modal-name" id="mName"></div>
+        <div class="modal-desc" id="mDesc"></div>
+        <div class="modal-specs" id="mSpecs"></div>
+        <div class="modal-price" id="mPrice"></div>
+        <button class="btn-contact" onclick="showToast('Contact request sent!', 'success'); closeModalBtn()">
+            Contact Sales Team
+        </button>
+    </div>
+</div>
+
+<footer>
+    &copy; 2026 <span>v4nD Tech</span> &middot; All rights reserved
+</footer>
+
+<script>
+    // Auth guard
+    const token = localStorage.getItem('token');
+    const role  = localStorage.getItem('role');
+    const uname = localStorage.getItem('username');
+
+    if (!token) window.location.href = '/index.html';
+
+    // Setup navbar
+    document.getElementById('navUser').textContent = (role === 'ADMIN' ? '🛡 ' : '👤 ') + uname;
+    if (role === 'ADMIN') document.getElementById('adminLink').style.display = 'flex';
+
+    // Product emoji map
+    const ICONS = {
+        'Laptop':     '💻',
+        'Server':     '🖥️',
+        'Network':    '📡',
+        'Storage':    '💾',
+        'Component':  '⚙️',
+        'Peripheral': '🖱️',
+        'Power':      '⚡',
+        'Other':      '📦'
+    };
+
+    // Fake specs for demo
+    const SPECS = {
+        'Laptop':     { CPU: 'Intel Core Ultra 9', RAM: '32GB DDR5', Storage: '1TB NVMe SSD', Display: '15.6" 4K OLED' },
+        'Server':     { CPU: 'Intel Xeon Silver 4314', RAM: '64GB ECC', Storage: '4x 3.84TB SSD', Form: '2U Rack' },
+        'Network':    { Ports: '24x 1GbE + 4x 10GbE', PoE: 'PoE+ 802.3at', Throughput: '88 Gbps', VLAN: 'Yes' },
+        'Storage':    { Interface: 'PCIe 4.0 NVMe', Read: '7,450 MB/s', Write: '6,900 MB/s', TBW: '1,200 TBW' },
+        'Component':  { Type: 'DDR5 UDIMM', Speed: '6000 MHz', Latency: 'CL36', Voltage: '1.35V' },
+        'Peripheral': { Ports: '8x HDMI 2.0', Resolution: '4K@60Hz', USB: 'USB 3.2 Gen2', OS: 'Platform Independent' },
+        'Power':      { Capacity: '1500VA / 900W', Runtime: '10 min at full load', Outlets: '8x IEC C13', LCD: 'Yes' },
+        'Other':      { Status: 'Available', Warranty: '2 Years', Support: '24/7' }
+    };
+
+    let allProducts = [];
+    let activeCategory = 'all';
+
+    async function loadProducts(search) {
+        const grid = document.getElementById('productGrid');
+        const info = document.getElementById('resultsInfo');
+
+        try {
+            let url = '/api/v1/products';
+            if (search) url += '?search=' + encodeURIComponent(search);
+
+            const resp = await fetch(url, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            if (resp.status === 401 || resp.status === 403) {
+                window.location.href = '/index.html';
+                return;
+            }
+
+            const data = await resp.json();
+            allProducts = Array.isArray(data) ? data : [];
+            renderProducts(allProducts);
+
+        } catch (e) {
+            grid.innerHTML = '<div class="empty-state"><div class="icon">&#9888;</div><h3>Connection Error</h3><p>Could not load products</p></div>';
+            info.textContent = 'Error loading products';
+        }
+    }
+
+    function renderProducts(products) {
+        const grid = document.getElementById('productGrid');
+        const info = document.getElementById('resultsInfo');
+
+        // Filter by category
+        const filtered = activeCategory === 'all'
+            ? products
+            : products.filter(p => p.searchTag === activeCategory || !p.searchTag && activeCategory === 'Other');
+
+        info.innerHTML = 'Showing <span>' + filtered.length + '</span> of ' + products.length + ' products';
+
+        if (filtered.length === 0) {
+            grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1"><div class="icon">&#128269;</div><h3>No products found</h3><p>Try a different search term or category</p></div>';
+            return;
+        }
+
+        // Store products globally for modal access
+        window._products = filtered;
+
+        grid.innerHTML = filtered.map((p, idx) => {
+            const cat  = p.searchTag || 'Other';
+            const icon = ICONS[cat] || '📦';
+            const price = p.price ? '$' + p.price.toLocaleString() : 'Contact for price';
+            return '<div class="product-card" onclick="openModal(' + idx + ')">' +
+                '<div class="product-img">' + icon + '</div>' +
+                '<div class="product-body">' +
+                '<div class="product-category">' + cat + '</div>' +
+                '<div class="product-name">' + escHtml(p.name) + '</div>' +
+                '<div class="product-desc">' + escHtml(p.description || 'Enterprise-grade ' + cat.toLowerCase() + ' solution') + '</div>' +
+                '<div class="product-footer">' +
+                '<div class="product-price">' + price + '</div>' +
+                '<button class="btn-detail">View Details</button>' +
+                '</div>' +
+                '</div>' +
+                '</div>';
+        }).join('');
+    }
+
+    function openModal(idx) {
+        const p = window._products[idx];
+        const cat  = p.searchTag || 'Other';
+        const icon = ICONS[cat] || '📦';
+        const specs = SPECS[cat] || SPECS['Other'];
+
+        document.getElementById('mIcon').textContent     = icon;
+        document.getElementById('mCategory').textContent = cat;
+        document.getElementById('mName').textContent     = p.name;
+        document.getElementById('mDesc').textContent     = p.description || 'Enterprise-grade ' + cat.toLowerCase() + ' solution for modern infrastructure.';
+        document.getElementById('mPrice').textContent    = p.price ? '$' + p.price.toLocaleString() : 'Contact for price';
+
+        document.getElementById('mSpecs').innerHTML = Object.entries(specs).map(([k,v]) =>
+            '<div class="spec-row"><span class="spec-key">' + k + '</span><span class="spec-val">' + v + '</span></div>'
+        ).join('');
+
+        document.getElementById('modalOverlay').classList.add('open');
+    }
+
+    function closeModal(e) {
+        if (e.target === document.getElementById('modalOverlay')) closeModalBtn();
+    }
+    function closeModalBtn() {
+        document.getElementById('modalOverlay').classList.remove('open');
+    }
+
+    function doSearch() {
+        const q = document.getElementById('searchInput').value.trim();
+        loadProducts(q);
+    }
+
+    function filterCategory(cat, el) {
+        activeCategory = cat;
+        document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+        renderProducts(allProducts);
+    }
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = '/index.html';
+    }
+
+    function showToast(msg, type) {
+        type = type || 'success';
+        const el = document.createElement('div');
+        el.className = 'toast ' + type;
+        el.innerHTML = '<span>' + (type === 'success' ? '&#10003;' : '&#10007;') + '</span><span>' + msg + '</span>';
+        document.getElementById('toastContainer').appendChild(el);
+        setTimeout(function() { el.remove(); }, 3000);
+    }
+
+    function escHtml(str) {
+        if (!str) return '';
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // Load on start
+    loadProducts();
+</script>
+</body>
+</html>

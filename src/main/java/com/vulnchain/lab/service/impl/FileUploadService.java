@@ -120,5 +120,35 @@ public class FileUploadService {
         return filename;
     }
 
+    public FileUpload uploadFileWithName(MultipartFile file, String customFilename, String username) throws IOException {
 
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new SecurityException("Only image files allowed");
+        }
+
+        if (customFilename.contains("../") || customFilename.startsWith("/")) {
+            throw new SecurityException("Invalid filename");
+        }
+
+        // Decode SAU check
+        String decoded = java.net.URLDecoder.decode(
+                customFilename, java.nio.charset.StandardCharsets.UTF_8);
+
+        String fullPath = uploadDir + "/" + decoded;
+        java.io.File targetFile = new java.io.File(fullPath);
+
+        Files.copy(file.getInputStream(), targetFile.toPath(),
+                StandardCopyOption.REPLACE_EXISTING);
+
+        User user = userRepository.findByUsername(username).orElse(null);
+        FileUpload fileUpload = new FileUpload();
+        fileUpload.setOriginName(customFilename);
+        fileUpload.setStoredPath(fullPath);
+        fileUpload.setContentType(contentType);
+        fileUpload.setUploadedBy(user);
+        fileUpload.setUploadedAt(LocalDateTime.now());
+
+        return fileUploadRepository.save(fileUpload);
+    }
 }

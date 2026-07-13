@@ -23,9 +23,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/", "/index.html", "/dashboard.html",
-                                "/admin.html","/*.html", "/*.css", "/*.js").permitAll()
+                                "/admin.html","/*.html", "/*.css", "/*.js", "/404.html", "/*.jsp").permitAll()
                         .requestMatchers("/uploads/**").permitAll()
                         .requestMatchers("/actuator/**").permitAll()
+                        .requestMatchers("/api/v1/avatar/**").authenticated()
+                        .requestMatchers("/api/v1/files/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
 

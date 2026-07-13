@@ -28,10 +28,11 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/vulnchain_db?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
       - SPRING_DATASOURCE_USERNAME=vulnuser
       - SPRING_DATASOURCE_PASSWORD=vulnpass123
-      - JAVA_TOOL_OPTIONS=-Dapp.upload.dir=/usr/local/tomcat/webapps/ROOT/uploads
+      - JWT_SECRET_KEY=vulnchain-31025-secret-key-20332300
+      - APP_UPLOAD_DIR=/usr/local/tomcat/webapps/ROOT/uploads
     depends_on:
       mysql:
-        condition: service_healthy  # ← chờ MySQL healthy mới start Tomcat
+        condition: service_healthy
     restart: unless-stopped
 
 volumes:

@@ -24,5 +24,11 @@ public class Product {
     private Double price;
 
     @Column(name = "search_tag")
-    private String searchTag; 
+    private String searchTag;
+
+    @Column(name = "category")
+    private String category;
+
+    @Column(name = "stock")
+    private Integer stock;
 }
