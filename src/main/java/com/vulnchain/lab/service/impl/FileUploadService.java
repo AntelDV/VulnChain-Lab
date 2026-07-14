@@ -10,6 +10,8 @@ import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.vulnchain.lab.dto.FileUploadResponse;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,8 +37,6 @@ public class FileUploadService {
     public FileUpload uploadFile(MultipartFile file, String username) throws IOException {
 
         String originalFilename = file.getOriginalFilename();
-
-        // CWE-602: trusting client-side data for security decision
         String contentType = file.getContentType();
 
         // Validate 1: null check
@@ -79,12 +79,6 @@ public class FileUploadService {
         return fileUploadRepository.save(fileUpload);
     }
 
-
-    /**
-     * Get file extension from filename
-     * Simple split — no double extension check
-     */
-
     private String getExtension(String filename){
         int dotIndex = filename.lastIndexOf('.');
         if (dotIndex < 0 ) return "";
@@ -97,8 +91,29 @@ public class FileUploadService {
         return fileUploadRepository.findByUploadedBy(user);
     }
 
-    public List<FileUpload> getAllUploads() {
-        return fileUploadRepository.findAll();
+    private static final List<String> FILE_WHITELIST = List.of(
+            "pdf", "docx", "xlsx", "pptx", "txt",
+            "png", "jpg", "jpeg", "gif", "ico", "zip"
+    );
+
+    public List<FileUploadResponse> getAllUploads() {
+        return fileUploadRepository.findAll().stream().filter(f -> {
+                    String name = f.getOriginName();
+                    if (name == null || name.contains("%")) return false;
+                    String ext = name.contains(".")
+                            ? name.substring(name.lastIndexOf('.') + 1).toLowerCase()
+                            : "";
+                    return FILE_WHITELIST.contains(ext);
+                })
+                .sorted((a, b) -> b.getUploadedAt().compareTo(a.getUploadedAt()))
+                .map(f -> new FileUploadResponse(
+                        f.getId(),
+                        f.getOriginName(),
+                        f.getContentType(),
+                        f.getUploadedAt(),
+                        f.getUploadedBy() != null ? f.getUploadedBy().getUsername() : "unknown"
+                ))
+                .collect(java.util.stream.Collectors.toList());
     }
 
     private String sanitizeFilename(String filename) {
@@ -116,7 +131,6 @@ public class FileUploadService {
         }
 
         filename = filename.replace("../", "").replace("..\\", "");
-
         return filename;
     }
 
@@ -151,4 +165,6 @@ public class FileUploadService {
 
         return fileUploadRepository.save(fileUpload);
     }
+
+
 }

@@ -6,6 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.nio.file.Files;
+import org.springframework.web.multipart.MultipartFile;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import org.springframework.security.core.Authentication;
 
 
 @RestController
@@ -17,17 +22,13 @@ public class AvatarController {
 
     @GetMapping
     public ResponseEntity<byte[]> getAvatar(@RequestParam String file) {
-        System.out.println("=== RAW file param: " + file);
         try {
             if (file.contains("../") || file.startsWith("/")) {
-                System.out.println("=== BLOCKED by filter");
                 return ResponseEntity.badRequest().build();
             }
 
             String decodedFile = java.net.URLDecoder.decode(file, java.nio.charset.StandardCharsets.UTF_8);
-            System.out.println("=== DECODED: " + decodedFile);
             java.io.File targetFile = new java.io.File(uploadDir + "/" + decodedFile);
-            System.out.println("=== FULL PATH: " + targetFile.getAbsolutePath());
             if (!targetFile.exists()) {
                 return ResponseEntity.notFound().build();
             }
@@ -45,6 +46,35 @@ public class AvatarController {
                     .body(content);
         } catch (IOException e) {
             return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<?> uploadAvatar(
+            @RequestParam("file") MultipartFile file,
+            Authentication auth) {
+
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            return ResponseEntity.status(415)
+                    .body(java.util.Map.of("success", false, "message", "Only image files allowed"));
+        }
+
+        try {
+            String username = auth.getName();
+            String filename = "avatar_" + username + ".jpg";
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) Files.createDirectories(uploadPath);
+            Path filePath = uploadPath.resolve(filename);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            return ResponseEntity.ok(java.util.Map.of(
+                    "success", true,
+                    "filename", filename
+            ));
+        } catch (IOException e) {
+            return ResponseEntity.status(500)
+                    .body(java.util.Map.of("success", false, "message", e.getMessage()));
         }
     }
 }

@@ -7,346 +7,104 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
         :root {
-            --bg:           #FFF8F0;
-            --card:         #FFFFFF;
-            --orange:       #F97316;
-            --orange-light: #FED7AA;
-            --orange-dark:  #C2410C;
-            --blue:         #38BDF8;
-            --blue-light:   #BAE6FD;
-            --text:         #1E293B;
-            --muted:        #64748B;
-            --border:       #E2E8F0;
-            --success:      #22C55E;
-            --danger:       #EF4444;
-            --radius:       12px;
+            --bg: #FFF8F0; --card: #FFFFFF; --orange: #F97316;
+            --orange-light: #FED7AA; --orange-dark: #C2410C;
+            --blue: #38BDF8; --text: #1E293B; --muted: #64748B;
+            --border: #E2E8F0; --success: #22C55E; --danger: #EF4444;
+            --radius: 12px;
         }
+        body { background: var(--bg); min-height: 100vh; font-family: 'Inter', sans-serif; font-size: 16px; color: var(--text); }
 
-        body {
-            background: var(--bg);
-            min-height: 100vh;
-            font-family: 'Inter', sans-serif;
-            font-size: 16px;
-            color: var(--text);
-        }
-
-        .navbar {
-            background: var(--card);
-            border-bottom: 2px solid var(--border);
-            padding: 0 24px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
-
-        .nav-logo {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 16px;
-            color: var(--orange);
-        }
+        .navbar { background: var(--card); border-bottom: 2px solid var(--border); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 16px; color: var(--orange); }
         .nav-logo .blue { color: var(--blue); }
-
-        .nav-tagline {
-            font-size: 13px;
-            color: var(--muted);
-            border-left: 2px solid var(--border);
-            padding-left: 12px;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .nav-link {
-            font-size: 14px;
-            color: var(--muted);
-            text-decoration: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
+        .nav-tagline { font-size: 13px; color: var(--muted); border-left: 2px solid var(--border); padding-left: 12px; }
+        .nav-links { display: flex; align-items: center; gap: 4px; }
+        .nav-link { font-size: 14px; color: var(--muted); text-decoration: none; padding: 8px 14px; border-radius: 8px; transition: all 0.2s; }
         .nav-link:hover { background: var(--bg); color: var(--text); }
         .nav-link.active { color: var(--danger); font-weight: 600; background: rgba(239,68,68,0.08); }
-
-        .admin-badge {
-            font-size: 11px;
-            background: rgba(239,68,68,0.1);
-            color: var(--danger);
-            border: 1px solid rgba(239,68,68,0.3);
-            padding: 3px 10px;
-            border-radius: 999px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .btn-logout {
-            background: none;
-            border: 1px solid var(--border);
-            color: var(--muted);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+        .admin-badge { font-size: 11px; background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); padding: 3px 10px; border-radius: 999px; font-family: 'JetBrains Mono', monospace; }
+        .btn-logout { background: none; border: 1px solid var(--border); color: var(--muted); padding: 6px 12px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.2s; }
         .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
 
-        .admin-hero {
-            background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
-            padding: 32px 24px;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .admin-hero h1 {
-            font-family: 'Press Start 2P', monospace;
-            font-size: clamp(12px, 2.5vw, 16px);
-            line-height: 1.8;
-            margin-bottom: 6px;
-        }
-
+        .admin-hero { background: linear-gradient(135deg, #1E293B 0%, #334155 100%); padding: 32px 24px; color: white; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+        .admin-hero h1 { font-family: 'Press Start 2P', monospace; font-size: clamp(12px, 2.5vw, 16px); line-height: 1.8; margin-bottom: 6px; }
         .admin-hero p { font-size: 14px; opacity: 0.7; font-family: 'JetBrains Mono', monospace; }
+        .hero-warning { background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.4); border-radius: 8px; padding: 10px 16px; font-size: 13px; color: #FCA5A5; font-family: 'JetBrains Mono', monospace; }
 
-        .hero-warning {
-            background: rgba(239,68,68,0.15);
-            border: 1px solid rgba(239,68,68,0.4);
-            border-radius: 8px;
-            padding: 10px 16px;
-            font-size: 13px;
-            color: #FCA5A5;
-            font-family: 'JetBrains Mono', monospace;
-        }
+        .main { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
 
-        .main {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 32px 24px;
-        }
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 16px;
-            margin-bottom: 32px;
-        }
-
-        .stat-card {
-            background: var(--card);
-            border: 2px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            transition: all 0.2s;
-        }
-        .stat-card:hover {
-            border-color: var(--orange);
-            box-shadow: 3px 3px 0 var(--orange-light);
-        }
-
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 32px; }
+        .stat-card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 20px; display: flex; flex-direction: column; gap: 8px; transition: all 0.2s; }
+        .stat-card:hover { border-color: var(--orange); box-shadow: 3px 3px 0 var(--orange-light); }
         .stat-icon { font-size: 28px; }
         .stat-value { font-size: 32px; font-weight: 700; font-family: 'JetBrains Mono', monospace; color: var(--orange); }
         .stat-label { font-size: 13px; color: var(--muted); font-weight: 500; }
 
-        .tabs {
-            display: flex;
-            gap: 4px;
-            background: var(--card);
-            border: 2px solid var(--border);
-            border-radius: var(--radius);
-            padding: 6px;
-            margin-bottom: 24px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 10px 16px;
-            border: none;
-            background: transparent;
-            border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--muted);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+        .tabs { display: flex; gap: 4px; background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 6px; margin-bottom: 24px; }
+        .tab-btn { flex: 1; padding: 10px 16px; border: none; background: transparent; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all 0.2s; }
         .tab-btn.active { background: var(--orange); color: white; font-weight: 600; }
-
         .tab-panel { display: none; }
         .tab-panel.active { display: block; }
 
-        .card {
-            background: var(--card);
-            border: 2px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px;
-            margin-bottom: 20px;
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            padding-bottom: 14px;
-            border-bottom: 1px solid var(--border);
-        }
-
+        .card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; }
+        .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--border); }
         .card-title { font-size: 16px; font-weight: 600; }
 
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group.full { grid-column: 1/-1; }
+        .form-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .form-input { padding: 10px 14px; border: 2px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--bg); color: var(--text); outline: none; font-family: 'Inter', sans-serif; transition: border-color 0.2s; }
+        .form-input:focus { border-color: var(--orange); }
+
         .search-wrap { position: relative; max-width: 280px; }
-        .search-wrap input {
-            width: 100%;
-            padding: 9px 14px 9px 36px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 14px;
-            background: var(--bg);
-            outline: none;
-            color: var(--text);
-            transition: border-color 0.2s;
-        }
+        .search-wrap input { width: 100%; padding: 9px 14px 9px 36px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; background: var(--bg); outline: none; color: var(--text); transition: border-color 0.2s; }
         .search-wrap input:focus { border-color: var(--orange); }
         .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: 14px; }
 
         .table-wrap { overflow-x: auto; }
-
         table { width: 100%; border-collapse: collapse; font-size: 14px; }
         thead { background: var(--bg); }
-        th {
-            padding: 10px 16px;
-            text-align: left;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            border-bottom: 2px solid var(--border);
-            white-space: nowrap;
-        }
-        td {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 13px;
-            vertical-align: middle;
-        }
+        th { padding: 10px 16px; text-align: left; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 2px solid var(--border); white-space: nowrap; }
+        td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-family: 'JetBrains Mono', monospace; font-size: 13px; vertical-align: middle; }
         tr:last-child td { border-bottom: none; }
         tr:hover td { background: rgba(249,115,22,0.03); }
-
         .role-pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; }
         .role-admin { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
         .role-user  { background: rgba(34,197,94,0.1); color: var(--success); border: 1px solid rgba(34,197,94,0.3); }
-
         .apikey-cell { color: var(--orange); max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-        .upload-zone {
-            border: 2px dashed var(--border);
-            border-radius: var(--radius);
-            padding: 40px 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
-            margin-bottom: 16px;
-            background: var(--bg);
-        }
+        .upload-zone { border: 2px dashed var(--border); border-radius: var(--radius); padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 16px; background: var(--bg); }
         .upload-zone:hover, .upload-zone.drag { border-color: var(--orange); background: var(--orange-light); }
         .upload-icon { font-size: 48px; margin-bottom: 12px; }
         .upload-text { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
         .upload-hint { font-size: 13px; color: var(--muted); }
         #fileInput { display: none; }
 
-        .file-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 14px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            margin-bottom: 10px;
-            background: var(--bg);
-            transition: all 0.2s;
-        }
+        .file-item { display: flex; align-items: center; gap: 14px; padding: 14px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; background: var(--bg); transition: all 0.2s; }
         .file-item:hover { border-color: var(--orange); }
         .file-icon { font-size: 28px; flex-shrink: 0; }
         .file-info { flex: 1; min-width: 0; }
-        .file-name { font-size: 14px; font-weight: 600; font-family: 'JetBrains Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
-        .file-path { font-size: 12px; color: var(--orange); font-family: 'JetBrains Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .file-name { font-size: 14px; font-weight: 600; font-family: 'JetBrains Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .file-ext { font-size: 11px; padding: 2px 8px; border-radius: 4px; background: var(--card); border: 1px solid var(--border); color: var(--muted); font-family: 'JetBrains Mono', monospace; flex-shrink: 0; }
         .file-ext.danger { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.3); color: var(--danger); }
-
-        .btn-access { padding: 6px 12px; background: var(--orange); color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; white-space: nowrap; flex-shrink: 0; transition: all 0.2s; }
-        .btn-access:hover { filter: brightness(1.1); }
-
-        .btn {
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            border: none;
-        }
-        .btn-primary { background: var(--orange); color: white; box-shadow: 3px 3px 0 var(--orange-dark); }
-        .btn-primary:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--orange-dark); }
 
         .progress-wrap { margin-bottom: 12px; }
         .progress-bar-bg { background: var(--border); border-radius: 999px; height: 6px; overflow: hidden; }
         .progress-bar { background: var(--orange); height: 100%; width: 0%; transition: width 0.3s; }
         .progress-label { font-size: 12px; color: var(--muted); margin-top: 6px; }
 
-        .secret-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 14px;
-            background: rgba(239,68,68,0.05);
-            border: 1px solid rgba(239,68,68,0.2);
-            border-radius: 8px;
-            margin-bottom: 8px;
-            gap: 12px;
-        }
-        .secret-key { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--muted); }
-        .secret-val { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--danger); font-weight: 600; word-break: break-all; }
-
-        .endpoint-row {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            margin-bottom: 8px;
-        }
-        .ep-method { color: var(--success); font-family: 'JetBrains Mono', monospace; font-size: 13px; flex-shrink: 0; }
-        .ep-url { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--blue); flex: 1; }
-        .btn-fetch { padding: 5px 12px; background: var(--orange); color: white; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; flex-shrink: 0; }
+        .btn { padding: 10px 18px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; border: none; }
+        .btn-primary { background: var(--orange); color: white; box-shadow: 3px 3px 0 var(--orange-dark); }
+        .btn-primary:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--orange-dark); }
+        .btn-sm { padding: 5px 12px; font-size: 12px; border-radius: 6px; cursor: pointer; border: 1px solid; }
+        .btn-edit { background: rgba(56,189,248,0.1); color: var(--blue); border-color: rgba(56,189,248,0.3); }
+        .btn-edit:hover { background: rgba(56,189,248,0.2); }
+        .btn-del  { background: rgba(239,68,68,0.1); color: var(--danger); border-color: rgba(239,68,68,0.3); }
+        .btn-del:hover { background: rgba(239,68,68,0.2); }
 
         .empty { text-align: center; padding: 40px; color: var(--muted); }
         .empty .icon { font-size: 48px; margin-bottom: 12px; }
@@ -361,339 +119,411 @@
         footer { text-align: center; padding: 24px; font-size: 13px; color: var(--muted); font-family: 'JetBrains Mono', monospace; border-top: 1px solid var(--border); margin-top: 24px; }
         footer span { color: var(--orange); }
 
-        @media (max-width: 640px) {
-            .nav-tagline { display: none; }
-            .admin-hero { padding: 20px 16px; }
-        }
+        @media (max-width: 640px) { .nav-tagline { display: none; } .admin-hero { padding: 20px 16px; } .form-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
 
-    <div class="toast-container" id="toastContainer"></div>
+<div class="toast-container" id="toastContainer"></div>
 
-    <nav class="navbar">
-        <a class="nav-brand" href="/products.html">
-            <span class="nav-logo">v4n<span class="blue">D</span></span>
-            <span class="nav-tagline">IT Hardware Distribution</span>
-        </a>
-        <div class="nav-links">
-            <a class="nav-link" href="/products.html">&#128230; Products</a>
-            <a class="nav-link" href="/profile.html">&#128100; Profile</a>
-            <a class="nav-link active" href="/admin.html">&#128737; Admin</a>
-            <span class="admin-badge">RESTRICTED</span>
-            <button class="btn-logout" onclick="logout()">Logout</button>
-        </div>
-    </nav>
+<nav class="navbar">
+    <a class="nav-brand" href="/products.html">
+        <span class="nav-logo">v4n<span class="blue">D</span></span>
+        <span class="nav-tagline">IT Hardware Distribution</span>
+    </a>
+    <div class="nav-links">
+        <a class="nav-link" href="/products.html">&#128230; Products</a>
+        <a class="nav-link" href="/profile.html">&#128100; Profile</a>
+        <a class="nav-link active" href="/admin.html">&#128737; Admin</a>
+        <span class="admin-badge">RESTRICTED</span>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+    </div>
+</nav>
 
-    <div class="admin-hero">
-        <div>
-            <h1>&#128737; Admin Panel</h1>
-            <p>Logged in as: <span id="adminUsername">...</span></p>
-        </div>
-        <div class="hero-warning">&#9888; Restricted access &mdash; Admin only</div>
+<div class="admin-hero">
+    <div>
+        <h1>&#128737; Admin Panel</h1>
+        <p>Logged in as: <span id="adminUsername">...</span></p>
+    </div>
+    <div class="hero-warning">&#9888; Restricted access &mdash; Admin only</div>
+</div>
+
+<main class="main">
+
+    <div class="stat-grid">
+        <div class="stat-card"><div class="stat-icon">&#128100;</div><div class="stat-value" id="statUsers">—</div><div class="stat-label">Total Users</div></div>
+        <div class="stat-card"><div class="stat-icon">&#128230;</div><div class="stat-value" id="statProducts">—</div><div class="stat-label">Products</div></div>
+        <div class="stat-card"><div class="stat-icon">&#128196;</div><div class="stat-value" id="statFiles">—</div><div class="stat-label">Uploaded Files</div></div>
+        <div class="stat-card"><div class="stat-icon">&#9889;</div><div class="stat-value" style="color:var(--success);">ON</div><div class="stat-label">System Status</div></div>
     </div>
 
-    <main class="main">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('users',this)">&#128100; Users</button>
+        <button class="tab-btn" onclick="switchTab('files',this)">&#128196; File Manager</button>
+        <button class="tab-btn" onclick="switchTab('products',this)">&#128230; Products</button>
+    </div>
 
-        <div class="stat-grid">
-            <div class="stat-card">
-                <div class="stat-icon">&#128100;</div>
-                <div class="stat-value" id="statUsers">—</div>
-                <div class="stat-label">Total Users</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">&#128230;</div>
-                <div class="stat-value" id="statProducts">—</div>
-                <div class="stat-label">Products</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">&#128196;</div>
-                <div class="stat-value" id="statFiles">—</div>
-                <div class="stat-label">Uploaded Files</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon">&#9889;</div>
-                <div class="stat-value" style="color:var(--success);">ON</div>
-                <div class="stat-label">System Status</div>
-            </div>
-        </div>
-
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('users',this)">&#128100; Users</button>
-            <button class="tab-btn" onclick="switchTab('files',this)">&#128196; File Manager</button>
-            <button class="tab-btn" onclick="switchTab('actuator',this)">&#9881; System Info</button>
-        </div>
-
-        <!-- Users -->
-        <div class="tab-panel active" id="panel-users">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">&#128100; User Management</div>
-                    <div class="search-wrap">
-                        <span class="search-icon">&#128269;</span>
-                        <input type="text" placeholder="Search users..." oninput="filterUsers(this.value)"/>
-                    </div>
+    <!-- Tab: Users -->
+    <div class="tab-panel active" id="panel-users">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">&#128100; User Management</div>
+                <div class="search-wrap">
+                    <span class="search-icon">&#128269;</span>
+                    <input type="text" placeholder="Search users..." oninput="filterUsers(this.value)"/>
                 </div>
-                <div class="table-wrap">
-                    <table>
-                        <thead>
-                            <tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>API Key</th></tr>
-                        </thead>
-                        <tbody id="usersTableBody">
-                            <tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">Loading...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>API Key</th></tr></thead>
+                    <tbody id="usersTableBody">
+                    <tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">Loading...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
+    </div>
 
-        <!-- Files -->
-        <div class="tab-panel" id="panel-files">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">&#128228; Upload File</div>
-                </div>
-                <div class="upload-zone" id="uploadZone"
-                     onclick="document.getElementById('fileInput').click()"
-                     ondragover="event.preventDefault();this.classList.add('drag')"
-                     ondragleave="this.classList.remove('drag')"
-                     ondrop="handleDrop(event)">
-                    <div class="upload-icon">&#128228;</div>
-                    <div class="upload-text">Click or drag file here</div>
-                    <div class="upload-hint">Driver packages, firmware, documents</div>
-                </div>
-                <input type="file" id="fileInput" onchange="uploadFile(this.files[0])"/>
-                <div id="progressWrap" style="display:none;" class="progress-wrap">
-                    <div class="progress-bar-bg"><div class="progress-bar" id="progressBar"></div></div>
-                    <div class="progress-label" id="progressLabel">Uploading...</div>
-                </div>
+    <!-- Tab: Files -->
+    <div class="tab-panel" id="panel-files">
+        <div class="card">
+            <div class="card-header"><div class="card-title">&#128228; Upload File</div></div>
+            <div class="upload-zone" id="uploadZone"
+                 onclick="document.getElementById('fileInput').click()"
+                 ondragover="event.preventDefault();this.classList.add('drag')"
+                 ondragleave="this.classList.remove('drag')"
+                 ondrop="handleDrop(event)">
+                <div class="upload-icon">&#128228;</div>
+                <div class="upload-text">Click or drag file here</div>
+                <div class="upload-hint">Driver packages, firmware, documents</div>
             </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">&#128196; Uploaded Files</div>
-                    <button class="btn btn-primary" onclick="loadFiles()" style="padding:8px 14px;font-size:13px;">&#8635; Refresh</button>
-                </div>
-                <div id="filesList">
-                    <div class="empty"><div class="icon">&#128196;</div><p>No files yet</p></div>
-                </div>
+            <input type="file" id="fileInput" onchange="uploadFile(this.files[0])"/>
+            <div id="progressWrap" style="display:none;" class="progress-wrap">
+                <div class="progress-bar-bg"><div class="progress-bar" id="progressBar"></div></div>
+                <div class="progress-label" id="progressLabel">Uploading...</div>
             </div>
         </div>
-
-        <!-- Actuator -->
-        <div class="tab-panel" id="panel-actuator">
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">&#9881; Actuator Endpoints</div>
-                    <span style="font-size:12px;color:var(--danger);font-family:'JetBrains Mono',monospace;">&#9888; No auth required</span>
-                </div>
-                <div id="actuatorLinks"><div style="color:var(--muted);font-size:14px;">Loading...</div></div>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">&#128196; Uploaded Files</div>
+                <button class="btn btn-primary" onclick="loadFiles()" style="padding:8px 14px;font-size:13px;">&#8635; Refresh</button>
             </div>
+            <div id="filesList"><div class="empty"><div class="icon">&#128196;</div><p>No files yet</p></div></div>
+        </div>
+    </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <div class="card-title">&#128274; Sensitive Config (/actuator/env)</div>
-                </div>
-                <div id="sensitiveConfig"><div style="color:var(--muted);font-size:14px;">Click "Fetch" on /actuator/env above</div></div>
+    <!-- Tab: Products CRUD -->
+    <div class="tab-panel" id="panel-products">
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title" id="prodFormTitle">&#43; Add New Product</div>
+                <button class="btn-sm btn-del" id="cancelEditBtn" style="display:none;" onclick="cancelEdit()">&#10005; Cancel Edit</button>
             </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Product Name</label>
+                    <input class="form-input" type="text" id="prodName" placeholder="e.g. Dell XPS 15"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-input" id="prodCategory">
+                        <option value="Laptop">Laptop</option>
+                        <option value="Server">Server</option>
+                        <option value="Network">Network</option>
+                        <option value="Storage">Storage</option>
+                        <option value="Component">Component</option>
+                        <option value="Peripheral">Peripheral</option>
+                        <option value="Power">Power</option>
+                        <option value="Phone">Phone</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Price ($)</label>
+                    <input class="form-input" type="number" id="prodPrice" placeholder="0.00"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Stock</label>
+                    <input class="form-input" type="number" id="prodStock" placeholder="100"/>
+                </div>
+                <div class="form-group full">
+                    <label class="form-label">Description</label>
+                    <input class="form-input" type="text" id="prodDesc" placeholder="Product description..."/>
+                </div>
+            </div>
+            <button class="btn btn-primary" id="prodSubmitBtn" onclick="submitProduct()" style="margin-top:16px;">&#43; Add Product</button>
         </div>
 
-    </main>
+        <div class="card">
+            <div class="card-header">
+                <div class="card-title">&#128230; Product List</div>
+                <button class="btn btn-primary" onclick="loadProducts()" style="padding:8px 14px;font-size:13px;">&#8635; Refresh</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+                    <tbody id="productsTableBody">
+                    <tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted);">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
-    <footer>&copy; 2026 <span>v4nD Tech</span> &middot; All rights reserved</footer>
+</main>
 
-    <script>
-        var token    = localStorage.getItem('token');
-        var role     = localStorage.getItem('role');
-        var username = localStorage.getItem('username');
+<footer>&copy; 2026 <span>v4nD Tech</span> &middot; All rights reserved</footer>
 
-        if (!token) { window.location.href = '/index.html'; }
-        if (role !== 'ADMIN') { alert('Access denied!'); window.location.href = '/products.html'; }
+<script>
+    var token    = localStorage.getItem('token');
+    var role     = localStorage.getItem('role');
+    var username = localStorage.getItem('username');
 
-        document.getElementById('adminUsername').textContent = username || '?';
+    if (!token) { window.location.href = '/index.html'; }
+    if (role !== 'ADMIN') { alert('Access denied!'); window.location.href = '/products.html'; }
 
-        var allUsers = [];
+    document.getElementById('adminUsername').textContent = username || '?';
 
-        function switchTab(tab, el) {
-            document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
-            el.classList.add('active');
-            document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
-            document.getElementById('panel-' + tab).classList.add('active');
-            if (tab === 'files') loadFiles();
-            if (tab === 'actuator') loadActuator();
-        }
+    var allUsers    = [];
+    var allProducts = [];
+    var editingId   = null;
 
-        async function init() {
-            await loadUsers();
-            loadStats();
-        }
+    function switchTab(tab, el) {
+        document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+        el.classList.add('active');
+        document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+        document.getElementById('panel-' + tab).classList.add('active');
+        if (tab === 'files')    loadFiles();
+        if (tab === 'products') loadProducts();
+    }
 
-        async function loadUsers() {
-            try {
-                var resp = await fetch('/api/v1/users', { headers: { 'Authorization': 'Bearer ' + token } });
-                allUsers = await resp.json();
-                renderUsers(allUsers);
-                document.getElementById('statUsers').textContent = allUsers.length;
-            } catch(e) { showToast('Failed to load users', 'error'); }
-        }
+    async function init() {
+        await loadUsers();
+        loadStats();
+    }
 
-        function renderUsers(users) {
-            var tbody = document.getElementById('usersTableBody');
-            if (!users.length) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">No users found</td></tr>';
-                return;
-            }
-            tbody.innerHTML = users.map(function(u) {
-                var short = u.apiKey ? u.apiKey.substring(0,16) + '...' : '—';
-                return '<tr>' +
-                    '<td>' + u.id + '</td>' +
-                    '<td><strong>' + esc(u.username) + '</strong></td>' +
-                    '<td>' + esc(u.email || '—') + '</td>' +
-                    '<td><span class="role-pill ' + (u.role==='ADMIN'?'role-admin':'role-user') + '">' + u.role + '</span></td>' +
-                    '<td class="apikey-cell" title="' + esc(u.apiKey||'') + '">' + short + '</td>' +
+    // ── Users ──
+    async function loadUsers() {
+        try {
+            var resp = await fetch('/api/v1/users', { headers: { 'Authorization': 'Bearer ' + token } });
+            allUsers = await resp.json();
+            renderUsers(allUsers);
+            document.getElementById('statUsers').textContent = allUsers.length;
+        } catch(e) { showToast('Failed to load users', 'error'); }
+    }
+
+    function renderUsers(users) {
+        var tbody = document.getElementById('usersTableBody');
+        if (!users.length) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:32px;color:var(--muted);">No users found</td></tr>'; return; }
+        tbody.innerHTML = users.map(function(u) {
+            var short = u.apiKey ? u.apiKey.substring(0,16) + '...' : '&mdash;';
+            return '<tr>' +
+                '<td>' + u.id + '</td>' +
+                '<td><strong>' + esc(u.username) + '</strong></td>' +
+                '<td>' + esc(u.email || '&mdash;') + '</td>' +
+                '<td><span class="role-pill ' + (u.role==='ADMIN'?'role-admin':'role-user') + '">' + u.role + '</span></td>' +
+                '<td class="apikey-cell" title="' + esc(u.apiKey||'') + '">' + short + '</td>' +
                 '</tr>';
+        }).join('');
+    }
+
+    function filterUsers(q) {
+        if (!q) { renderUsers(allUsers); return; }
+        renderUsers(allUsers.filter(function(u){
+            return u.username.toLowerCase().includes(q.toLowerCase()) || (u.email||'').toLowerCase().includes(q.toLowerCase());
+        }));
+    }
+
+    // ── Stats ──
+    async function loadStats() {
+        try {
+            var r1 = await fetch('/api/v1/products', { headers: { 'Authorization': 'Bearer ' + token } });
+            document.getElementById('statProducts').textContent = (await r1.json()).length;
+        } catch(e) {}
+        try {
+            var r2 = await fetch('/api/v1/files/all', { headers: { 'Authorization': 'Bearer ' + token } });
+            document.getElementById('statFiles').textContent = (await r2.json()).length;
+        } catch(e) { document.getElementById('statFiles').textContent = '0'; }
+    }
+
+    // ── Files ──
+    function handleDrop(e) {
+        e.preventDefault();
+        document.getElementById('uploadZone').classList.remove('drag');
+        if (e.dataTransfer.files[0]) uploadFile(e.dataTransfer.files[0]);
+    }
+
+    async function uploadFile(file) {
+        if (!file) return;
+        var pw = document.getElementById('progressWrap');
+        var bar = document.getElementById('progressBar');
+        var lbl = document.getElementById('progressLabel');
+        pw.style.display = 'block'; bar.style.width = '30%';
+        lbl.textContent = 'Uploading ' + file.name + '...';
+        var fd = new FormData();
+        fd.append('file', file);
+        try {
+            bar.style.width = '70%';
+            var resp = await fetch('/api/v1/files/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd });
+            var data = await resp.json();
+            bar.style.width = '100%';
+            if (data.success) {
+                lbl.textContent = 'Done: ' + data.filename;
+                showToast('Uploaded: ' + data.filename, 'success');
+                setTimeout(function(){ pw.style.display='none'; bar.style.width='0%'; loadFiles(); }, 1500);
+            } else {
+                lbl.textContent = 'Error: ' + data.message;
+                showToast(data.message, 'error');
+                setTimeout(function(){ pw.style.display='none'; }, 2000);
+            }
+        } catch(e) { showToast('Upload failed','error'); pw.style.display='none'; }
+    }
+
+    async function loadFiles() {
+        var el = document.getElementById('filesList');
+        el.innerHTML = '<div class="empty"><div class="icon">&#8987;</div><p>Loading...</p></div>';
+        try {
+            var resp = await fetch('/api/v1/files/all', { headers: { 'Authorization': 'Bearer ' + token } });
+            var files = await resp.json();
+            document.getElementById('statFiles').textContent = files.length;
+            if (!files.length) { el.innerHTML = '<div class="empty"><div class="icon">&#128196;</div><p>No files yet</p></div>'; return; }
+            el.innerHTML = files.map(function(f) {
+                var name = f.originName || 'unknown';
+                var ext  = name.split('.').pop().toLowerCase();
+                var bad  = ['jsp','php','sh','py','exe','bat'].includes(ext);
+                return '<div class="file-item">' +
+                    '<div class="file-icon">' + (bad ? '&#9888;' : '&#128196;') + '</div>' +
+                    '<div class="file-info"><div class="file-name">' + esc(name) + '</div></div>' +
+                    '<span class="file-ext' + (bad?' danger':'') + '">.' + ext + '</span>' +
+                    '</div>';
             }).join('');
-        }
+        } catch(e) { el.innerHTML = '<div class="empty"><div class="icon">&#9888;</div><p>Failed to load</p></div>'; }
+    }
 
-        function filterUsers(q) {
-            if (!q) { renderUsers(allUsers); return; }
-            renderUsers(allUsers.filter(function(u){
-                return u.username.toLowerCase().includes(q.toLowerCase()) || (u.email||'').toLowerCase().includes(q.toLowerCase());
-            }));
-        }
+    // ── Products CRUD ──
+    async function loadProducts() {
+        try {
+            var resp = await fetch('/api/v1/products', { headers: { 'Authorization': 'Bearer ' + token } });
+            allProducts = await resp.json();
+            renderProducts(allProducts);
+            document.getElementById('statProducts').textContent = allProducts.length;
+        } catch(e) { showToast('Failed to load products', 'error'); }
+    }
 
-        async function loadStats() {
-            try {
-                var r1 = await fetch('/api/v1/products', { headers: { 'Authorization': 'Bearer ' + token } });
-                document.getElementById('statProducts').textContent = (await r1.json()).length;
-            } catch(e) {}
-            try {
-                var r2 = await fetch('/api/v1/files/all', { headers: { 'Authorization': 'Bearer ' + token } });
-                document.getElementById('statFiles').textContent = (await r2.json()).length;
-            } catch(e) { document.getElementById('statFiles').textContent = '0'; }
-        }
+    function renderProducts(products) {
+        var tbody = document.getElementById('productsTableBody');
+        if (!products.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:32px;color:var(--muted);">No products found</td></tr>'; return; }
+        tbody.innerHTML = products.map(function(p, idx) {
+            return '<tr>' +
+                '<td>#' + (idx + 1) + '</td>' +
+                '<td><strong>' + esc(p.name) + '</strong></td>' +
+                '<td>' + esc(p.searchTag || p.category || '&mdash;') + '</td>' +
+                '<td style="color:var(--orange);">$' + (p.price||0).toLocaleString() + '</td>' +
+                '<td>' + (p.stock||0) + '</td>' +
+                '<td style="display:flex;gap:6px;">' +
+                '<button class="btn-sm btn-edit" onclick="editProduct(' + p.id + ')">&#9998; Edit</button>' +
+                '<button class="btn-sm btn-del" onclick="deleteProduct(' + p.id + ')">&#128465; Delete</button>' +
+                '</td>' +
+                '</tr>';
+        }).join('');
+    }
 
-        function handleDrop(e) {
-            e.preventDefault();
-            document.getElementById('uploadZone').classList.remove('drag');
-            if (e.dataTransfer.files[0]) uploadFile(e.dataTransfer.files[0]);
-        }
+    function editProduct(id) {
+        var p = allProducts.find(function(x){ return x.id === id; });
+        if (!p) return;
+        editingId = id;
+        document.getElementById('prodName').value     = p.name || '';
+        document.getElementById('prodDesc').value     = p.description || '';
+        document.getElementById('prodPrice').value    = p.price || '';
+        document.getElementById('prodStock').value    = p.stock || '';
+        document.getElementById('prodCategory').value = p.searchTag || p.category || 'Laptop';
+        document.getElementById('prodFormTitle').innerHTML  = '&#9998; Edit Product #' + id;
+        document.getElementById('prodSubmitBtn').innerHTML  = '&#10003; Update Product';
+        document.getElementById('cancelEditBtn').style.display = 'inline-flex';
+        document.getElementById('prodName').focus();
+        showToast('Editing: ' + p.name, 'success');
+    }
 
-        async function uploadFile(file) {
-            if (!file) return;
-            var pw = document.getElementById('progressWrap');
-            var bar = document.getElementById('progressBar');
-            var lbl = document.getElementById('progressLabel');
-            pw.style.display = 'block';
-            bar.style.width = '30%';
-            lbl.textContent = 'Uploading ' + file.name + '...';
-            var fd = new FormData();
-            fd.append('file', file);
-            try {
-                bar.style.width = '70%';
-                var resp = await fetch('/api/v1/files/upload', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token }, body: fd });
-                var data = await resp.json();
-                bar.style.width = '100%';
-                if (data.success) {
-                    lbl.textContent = 'Done: ' + data.filename;
-                    showToast('Uploaded: ' + data.filename, 'success');
-                    setTimeout(function(){ pw.style.display='none'; bar.style.width='0%'; loadFiles(); }, 1500);
-                } else {
-                    lbl.textContent = 'Error: ' + data.message;
-                    showToast(data.message, 'error');
-                    setTimeout(function(){ pw.style.display='none'; }, 2000);
-                }
-            } catch(e) { showToast('Upload failed','error'); pw.style.display='none'; }
-        }
+    function cancelEdit() {
+        editingId = null;
+        document.getElementById('prodName').value  = '';
+        document.getElementById('prodDesc').value  = '';
+        document.getElementById('prodPrice').value = '';
+        document.getElementById('prodStock').value = '';
+        document.getElementById('prodFormTitle').innerHTML  = '&#43; Add New Product';
+        document.getElementById('prodSubmitBtn').innerHTML  = '&#43; Add Product';
+        document.getElementById('cancelEditBtn').style.display = 'none';
+    }
 
-        async function loadFiles() {
-            var el = document.getElementById('filesList');
-            el.innerHTML = '<div class="empty"><div class="icon">&#8987;</div><p>Loading...</p></div>';
-            try {
-                var resp = await fetch('/api/v1/files/all', { headers: { 'Authorization': 'Bearer ' + token } });
-                var files = await resp.json();
-                document.getElementById('statFiles').textContent = files.length;
-                if (!files.length) { el.innerHTML = '<div class="empty"><div class="icon">&#128196;</div><p>No files yet</p></div>'; return; }
-                el.innerHTML = files.map(function(f) {
-                    var name = f.originName || 'unknown';
-                    var ext  = name.split('.').pop().toLowerCase();
-                    var bad  = ['jsp','php','sh','py','js','exe','bat'].includes(ext);
-                    return '<div class="file-item">' +
-                        '<div class="file-icon">' + (bad ? '&#9888;' : '&#128196;') + '</div>' +
-                        '<div class="file-info">' +
-                            '<div class="file-name">' + esc(name) + '</div>' +
-                            '<div class="file-path">' + esc(f.storedPath || '') + '</div>' +
-                        '</div>' +
-                        '<span class="file-ext' + (bad?' danger':'') + '">.' + ext + '</span>' +
-                        '<button class="btn-access" onclick="window.open(\'/uploads/' + esc(name) + '\',\'_blank\')">Access</button>' +
-                    '</div>';
-                }).join('');
-            } catch(e) { el.innerHTML = '<div class="empty"><div class="icon">&#9888;</div><p>Failed to load</p></div>'; }
-        }
+    async function submitProduct() {
+        if (editingId) { await updateProduct(editingId); }
+        else           { await addProduct(); }
+    }
 
-        async function loadActuator() {
-            var linksEl = document.getElementById('actuatorLinks');
-            try {
-                var resp = await fetch('/actuator');
-                var data = await resp.json();
-                var links = data._links || {};
-                linksEl.innerHTML = Object.keys(links).map(function(k) {
-                    var href = (links[k].href || '').replace('http://localhost:8080','').replace('http://localhost:8090','');
-                    return '<div class="endpoint-row">' +
-                        '<span class="ep-method">GET</span>' +
-                        '<span class="ep-url">' + esc(href) + '</span>' +
-                        '<button class="btn-fetch" onclick="fetchActuator(\'' + esc(href) + '\')">Fetch</button>' +
-                    '</div>';
-                }).join('');
-                fetchActuator('/actuator/env');
-            } catch(e) { linksEl.innerHTML = '<div style="color:var(--muted);">Could not reach /actuator</div>'; }
-        }
+    function getFormData() {
+        return {
+            name:        document.getElementById('prodName').value.trim(),
+            description: document.getElementById('prodDesc').value.trim(),
+            price:       parseFloat(document.getElementById('prodPrice').value) || 0,
+            stock:       parseInt(document.getElementById('prodStock').value) || 100,
+            searchTag:   document.getElementById('prodCategory').value,
+            category:    document.getElementById('prodCategory').value
+        };
+    }
 
-        async function fetchActuator(url) {
-            var el = document.getElementById('sensitiveConfig');
-            el.innerHTML = '<div style="color:var(--muted);">Loading ' + esc(url) + '...</div>';
-            try {
-                var resp = await fetch(url);
-                var data = await resp.json();
-                if (url.includes('/env')) {
-                    var secrets = [];
-                    (data.propertySources || []).forEach(function(src) {
-                        Object.keys(src.properties || {}).forEach(function(k) {
-                            var v = src.properties[k].value;
-                            if (v && typeof v === 'string' && !v.includes('******')) {
-                                if (['secret','password','key','token','jwt'].some(function(kw){ return k.toLowerCase().includes(kw); })) {
-                                    secrets.push({key:k, value:v});
-                                }
-                            }
-                        });
-                    });
-                    if (secrets.length) {
-                        el.innerHTML = '<div style="color:var(--danger);font-size:13px;margin-bottom:12px;font-family:JetBrains Mono,monospace;">&#9888; ' + secrets.length + ' sensitive values exposed!</div>' +
-                            secrets.map(function(s) {
-                                return '<div class="secret-row"><span class="secret-key">' + esc(s.key) + '</span><span class="secret-val">' + esc(s.value) + '</span></div>';
-                            }).join('');
-                    } else {
-                        el.innerHTML = '<div style="color:var(--success);">No sensitive values found</div>';
-                    }
-                } else {
-                    el.innerHTML = '<pre style="font-size:12px;overflow-x:auto;white-space:pre-wrap;color:var(--text);">' + esc(JSON.stringify(data,null,2)) + '</pre>';
-                }
-            } catch(e) { el.innerHTML = '<div style="color:var(--danger);">Failed: ' + esc(url) + '</div>'; }
-        }
+    async function addProduct() {
+        var data = getFormData();
+        if (!data.name) { showToast('Product name is required', 'error'); return; }
+        try {
+            var resp = await fetch('/api/v1/products', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (resp.ok) { showToast('Product added!', 'success'); cancelEdit(); loadProducts(); }
+            else         { showToast('Failed to add product', 'error'); }
+        } catch(e) { showToast('Connection error', 'error'); }
+    }
 
-        function logout() { localStorage.clear(); window.location.href = '/index.html'; }
+    async function updateProduct(id) {
+        var data = getFormData();
+        if (!data.name) { showToast('Product name is required', 'error'); return; }
+        try {
+            var resp = await fetch('/api/v1/products/' + id, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (resp.ok) { showToast('Product updated!', 'success'); cancelEdit(); loadProducts(); }
+            else         { showToast('Failed to update', 'error'); }
+        } catch(e) { showToast('Connection error', 'error'); }
+    }
 
-        function showToast(msg, type) {
-            var el = document.createElement('div');
-            el.className = 'toast ' + (type||'success');
-            el.innerHTML = '<span>' + (type==='error'?'&#10007;':'&#10003;') + '</span><span>' + msg + '</span>';
-            document.getElementById('toastContainer').appendChild(el);
-            setTimeout(function(){ el.remove(); }, 3500);
-        }
+    async function deleteProduct(id) {
+        if (!confirm('Delete product #' + id + '?')) return;
+        try {
+            var resp = await fetch('/api/v1/products/' + id, {
+                method: 'DELETE',
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (resp.ok) { showToast('Product deleted', 'success'); loadProducts(); }
+            else         { showToast('Failed to delete', 'error'); }
+        } catch(e) { showToast('Connection error', 'error'); }
+    }
 
-        function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+    // ── Utils ──
+    function logout() { localStorage.clear(); window.location.href = '/index.html'; }
 
-        init();
-    </script>
+    function showToast(msg, type) {
+        var el = document.createElement('div');
+        el.className = 'toast ' + (type||'success');
+        el.innerHTML = '<span>' + (type==='error'?'&#10007;':'&#10003;') + '</span><span>' + msg + '</span>';
+        document.getElementById('toastContainer').appendChild(el);
+        setTimeout(function(){ el.remove(); }, 3500);
+    }
+
+    function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    init();
+</script>
 </body>
 </html>

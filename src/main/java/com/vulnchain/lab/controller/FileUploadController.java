@@ -1,7 +1,9 @@
 package com.vulnchain.lab.controller;
 
+import com.vulnchain.lab.dto.FileUploadResponse;
 import com.vulnchain.lab.model.FileUpload;
 import com.vulnchain.lab.service.impl.FileUploadService;
+import com.vulnchain.lab.repository.FileUploadRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,6 +20,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class FileUploadController {
     private final FileUploadService fileUploadService;
+    private final FileUploadRepository fileUploadRepository;
 
     @PostMapping("/upload")
     public ResponseEntity<Map<String, Object>> uploadFile(
@@ -39,6 +42,7 @@ public class FileUploadController {
 
             response.put("success", true);
             response.put("message", "File uploaded successfully");
+            response.put("fileId", saved.getId());
             response.put("filename", saved.getOriginName());
             response.put("contentType", saved.getContentType());
             response.put("path", "/uploads/" + saved.getOriginName());
@@ -65,7 +69,19 @@ public class FileUploadController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<FileUpload>> getAllFiles () {
+    public ResponseEntity<List<FileUploadResponse>> getAllFiles() {
         return ResponseEntity.ok(fileUploadService.getAllUploads());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getFileById(@PathVariable Long id) {
+        return fileUploadRepository.findById(id).map(f -> ResponseEntity.ok(new FileUploadResponse(
+                        f.getId(),
+                        f.getOriginName(),
+                        f.getContentType(),
+                        f.getUploadedAt(),
+                        f.getUploadedBy() != null ? f.getUploadedBy().getUsername() : "unknown"
+                )))
+                .orElse(ResponseEntity.notFound().build());
     }
 }

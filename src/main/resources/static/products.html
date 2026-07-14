@@ -552,6 +552,7 @@
             />
         </div>
         <button class="btn-search" onclick="doSearch()">Search</button>
+        <button class="btn-search" onclick="clearSearch()" style="background:var(--bg);color:var(--muted);border:2px solid var(--border);box-shadow:none;">&#10005; Clear</button>
     </div>
 
     <!-- Category pills -->
@@ -564,6 +565,7 @@
         <div class="pill" onclick="filterCategory('Component', this)">&#9881; Component</div>
         <div class="pill" onclick="filterCategory('Peripheral', this)">&#128421; Peripheral</div>
         <div class="pill" onclick="filterCategory('Power', this)">&#9889; Power</div>
+        <div class="pill" onclick="filterCategory('Phone', this)">&#128242; Phone</div>
     </div>
 
     <!-- Results info -->
@@ -613,14 +615,15 @@
 
     // Product emoji map
     const ICONS = {
-        'Laptop':     '💻',
-        'Server':     '🖥️',
-        'Network':    '📡',
-        'Storage':    '💾',
-        'Component':  '⚙️',
-        'Peripheral': '🖱️',
-        'Power':      '⚡',
-        'Other':      '📦'
+        'Laptop':     '&#128187;',
+        'Server':     '&#128421;',
+        'Network':    '&#128225;',
+        'Storage':    '&#128190;',
+        'Component':  '&#9881;',
+        'Peripheral': '&#128421;',
+        'Power':      '&#9889;',
+        'Phone':      '&#128242;',
+        'Other':      '&#128230;'
     };
 
     // Fake specs for demo
@@ -632,6 +635,7 @@
         'Component':  { Type: 'DDR5 UDIMM', Speed: '6000 MHz', Latency: 'CL36', Voltage: '1.35V' },
         'Peripheral': { Ports: '8x HDMI 2.0', Resolution: '4K@60Hz', USB: 'USB 3.2 Gen2', OS: 'Platform Independent' },
         'Power':      { Capacity: '1500VA / 900W', Runtime: '10 min at full load', Outlets: '8x IEC C13', LCD: 'Yes' },
+        'Phone':      { OS: 'Android 15', Display: '6.8" AMOLED', Camera: '200MP Triple', Battery: '5000mAh' },
         'Other':      { Status: 'Available', Warranty: '2 Years', Support: '24/7' }
     };
 
@@ -669,10 +673,13 @@
         const grid = document.getElementById('productGrid');
         const info = document.getElementById('resultsInfo');
 
-        // Filter by category
+        // Filter by category — case-insensitive
         const filtered = activeCategory === 'all'
             ? products
-            : products.filter(p => p.searchTag === activeCategory || !p.searchTag && activeCategory === 'Other');
+            : products.filter(p => {
+                var tag = (p.searchTag || p.category || 'Other').toLowerCase();
+                return tag === activeCategory.toLowerCase();
+            });
 
         info.innerHTML = 'Showing <span>' + filtered.length + '</span> of ' + products.length + ' products';
 
@@ -703,20 +710,29 @@
         }).join('');
     }
 
-    function openModal(idx) {
-        const p = window._products[idx];
-        const cat  = p.searchTag || 'Other';
-        const icon = ICONS[cat] || '📦';
-        const specs = SPECS[cat] || SPECS['Other'];
+    async function openModal(idx) {
+        const cached = window._products[idx];
+        if (!cached) return;
+        let p = cached;
+        try {
+            const resp = await fetch('/api/v1/products/' + cached.id, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (resp.ok) p = await resp.json();
+        } catch(e) {}
 
-        document.getElementById('mIcon').textContent     = icon;
-        document.getElementById('mCategory').textContent = cat;
-        document.getElementById('mName').textContent     = p.name;
-        document.getElementById('mDesc').textContent     = p.description || 'Enterprise-grade ' + cat.toLowerCase() + ' solution for modern infrastructure.';
-        document.getElementById('mPrice').textContent    = p.price ? '$' + p.price.toLocaleString() : 'Contact for price';
+        const cat   = p.searchTag || p.category || 'Other';
+        const icon  = ICONS[cat]  || '&#128230;';
+        const specs = SPECS[cat]  || SPECS['Other'];
+
+        document.getElementById('mIcon').innerHTML     = icon;
+        document.getElementById('mCategory').innerHTML = escHtml(cat);
+        document.getElementById('mName').innerHTML     = escHtml(p.name);
+        document.getElementById('mDesc').innerHTML     = escHtml(p.description || 'Enterprise-grade ' + cat.toLowerCase() + ' solution for modern infrastructure.');
+        document.getElementById('mPrice').innerHTML    = p.price ? '$' + p.price.toLocaleString() : 'Contact for price';
 
         document.getElementById('mSpecs').innerHTML = Object.entries(specs).map(([k,v]) =>
-            '<div class="spec-row"><span class="spec-key">' + k + '</span><span class="spec-val">' + v + '</span></div>'
+            '<div class="spec-row"><span class="spec-key">' + escHtml(k) + '</span><span class="spec-val">' + escHtml(v) + '</span></div>'
         ).join('');
 
         document.getElementById('modalOverlay').classList.add('open');
@@ -732,6 +748,13 @@
     function doSearch() {
         const q = document.getElementById('searchInput').value.trim();
         loadProducts(q);
+    }
+
+    function clearSearch() {
+        document.getElementById('searchInput').value = '';
+        activeCategory = 'all';
+        document.querySelectorAll('.pill').forEach(function(p, i){ p.classList.toggle('active', i===0); });
+        loadProducts();
     }
 
     function filterCategory(cat, el) {

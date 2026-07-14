@@ -33,13 +33,10 @@ public class AuthController {
         }
 
         // Generate JWT Token
-        String token = jwtUtil.generateToken(
-                user.getUsername(),
-                user.getRole().name()
+        String token = jwtUtil.generateToken(user.getUsername(), user.getRole().name()
         );
 
-        return ResponseEntity.ok(
-                new AuthResponse(token, user.getUsername(), user.getRole().name(), "Login successful")
+        return ResponseEntity.ok( new AuthResponse(token, user.getUsername(), user.getRole().name(), "Login successful")
         );
 
     }
@@ -59,6 +56,7 @@ public class AuthController {
         newUser.setPassword(passwordEncoder.encode(request.getPassword()));
         newUser.setEmail(request.getUsername() + "@vulnchain.com");
         newUser.setRole(User.Role.USER);
+        newUser.setApiKey("sk-user-" + java.util.UUID.randomUUID());
         userRepository.save(newUser);
 
         return ResponseEntity.status(201)

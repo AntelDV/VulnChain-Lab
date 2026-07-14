@@ -7,437 +7,131 @@
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
         :root {
-            --bg:           #FFF8F0;
-            --card:         #FFFFFF;
-            --orange:       #F97316;
-            --orange-light: #FED7AA;
-            --orange-dark:  #C2410C;
-            --blue:         #38BDF8;
-            --blue-light:   #BAE6FD;
-            --text:         #1E293B;
-            --muted:        #64748B;
-            --border:       #E2E8F0;
-            --success:      #22C55E;
-            --danger:       #EF4444;
-            --radius:       12px;
+            --bg: #FFF8F0; --card: #FFFFFF; --orange: #F97316;
+            --orange-light: #FED7AA; --orange-dark: #C2410C;
+            --blue: #38BDF8; --text: #1E293B; --muted: #64748B;
+            --border: #E2E8F0; --success: #22C55E; --danger: #EF4444;
+            --radius: 12px;
         }
-
-        body {
-            background: var(--bg);
-            min-height: 100vh;
-            font-family: 'Inter', sans-serif;
-            font-size: 16px;
-            color: var(--text);
-        }
+        body { background: var(--bg); min-height: 100vh; font-family: 'Inter', sans-serif; font-size: 16px; color: var(--text); }
 
         /* Navbar */
-        .navbar {
-            background: var(--card);
-            border-bottom: 2px solid var(--border);
-            padding: 0 24px;
-            height: 64px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-        }
-
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-decoration: none;
-        }
-
-        .nav-logo {
-            font-family: 'Press Start 2P', monospace;
-            font-size: 16px;
-            color: var(--orange);
-        }
+        .navbar { background: var(--card); border-bottom: 2px solid var(--border); padding: 0 24px; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .nav-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+        .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 16px; color: var(--orange); }
         .nav-logo .blue { color: var(--blue); }
-
-        .nav-tagline {
-            font-size: 13px;
-            color: var(--muted);
-            border-left: 2px solid var(--border);
-            padding-left: 12px;
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .nav-link {
-            font-size: 14px;
-            color: var(--muted);
-            text-decoration: none;
-            padding: 8px 14px;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
+        .nav-tagline { font-size: 13px; color: var(--muted); border-left: 2px solid var(--border); padding-left: 12px; }
+        .nav-links { display: flex; align-items: center; gap: 4px; }
+        .nav-link { font-size: 14px; color: var(--muted); text-decoration: none; padding: 8px 14px; border-radius: 8px; transition: all 0.2s; }
         .nav-link:hover { background: var(--bg); color: var(--text); }
         .nav-link.active { color: var(--orange); font-weight: 600; }
-
-        .nav-admin {
-            background: rgba(239,68,68,0.1);
-            color: var(--danger);
-            border: 1px solid rgba(239,68,68,0.3);
-            font-size: 13px;
-            padding: 6px 12px;
-            border-radius: 8px;
-            text-decoration: none;
-        }
-        .nav-admin:hover { background: rgba(239,68,68,0.2); }
-
-        .btn-logout {
-            background: none;
-            border: 1px solid var(--border);
-            color: var(--muted);
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+        .nav-admin { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); font-size: 13px; padding: 6px 12px; border-radius: 8px; text-decoration: none; }
+        .btn-logout { background: none; border: 1px solid var(--border); color: var(--muted); padding: 6px 12px; border-radius: 8px; font-size: 13px; cursor: pointer; transition: all 0.2s; }
         .btn-logout:hover { border-color: var(--danger); color: var(--danger); }
 
         /* Main */
-        .main {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 40px 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 24px;
-        }
-
-        /* Page title */
-        .page-title {
-            font-size: 22px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .main { max-width: 800px; margin: 0 auto; padding: 40px 24px; display: flex; flex-direction: column; gap: 20px; }
+        .page-title { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
 
         /* Card */
-        .card {
-            background: var(--card);
-            border: 2px solid var(--border);
-            border-radius: var(--radius);
-            padding: 28px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 24px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .card-title {
-            font-size: 16px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .card { background: var(--card); border: 2px solid var(--border); border-radius: var(--radius); padding: 28px; }
+        .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+        .card-title { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
 
         /* Avatar section */
-        .avatar-section {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-bottom: 28px;
-        }
-
+        .avatar-section { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 24px; }
+        .avatar-wrap { position: relative; flex-shrink: 0; }
         .avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--orange-light), var(--blue-light));
+            width: 90px; height: 90px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--orange-light), var(--blue));
             border: 3px solid var(--orange);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 36px;
-            flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 40px; overflow: hidden;
         }
-
-        .avatar-info h2 {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
-        .role-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 12px;
-            border-radius: 999px;
-            font-size: 13px;
-            font-weight: 600;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .role-admin {
-            background: rgba(239,68,68,0.1);
-            color: var(--danger);
-            border: 1px solid rgba(239,68,68,0.3);
-        }
-
-        .role-user {
-            background: rgba(34,197,94,0.1);
-            color: var(--success);
-            border: 1px solid rgba(34,197,94,0.3);
-        }
-
-        /* Info fields */
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .info-field {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .info-field.full { grid-column: 1 / -1; }
-
-        .field-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .field-value {
-            font-size: 15px;
-            color: var(--text);
-            padding: 10px 14px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .field-value.sensitive {
-            color: var(--orange);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-        }
-
-        .field-value .masked { letter-spacing: 2px; }
-
-        .btn-copy {
-            background: none;
-            border: 1px solid var(--border);
-            color: var(--muted);
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-size: 12px;
-            cursor: pointer;
-            flex-shrink: 0;
+        .avatar img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-upload-btn {
+            position: absolute; bottom: 0; right: 0;
+            width: 28px; height: 28px; border-radius: 50%;
+            background: var(--orange); border: 2px solid var(--card);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 13px; color: white;
             transition: all 0.2s;
         }
-        .btn-copy:hover { border-color: var(--orange); color: var(--orange); }
+        .avatar-upload-btn:hover { background: var(--orange-dark); }
+        #avatarInput { display: none; }
+
+        .avatar-info { flex: 1; }
+        .avatar-info h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+        .role-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 999px; font-size: 13px; font-weight: 600; font-family: 'JetBrains Mono', monospace; margin-bottom: 8px; }
+        .role-admin { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+        .role-user  { background: rgba(34,197,94,0.1); color: var(--success); border: 1px solid rgba(34,197,94,0.3); }
+        .avatar-hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+        /* Info grid */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .info-field { display: flex; flex-direction: column; gap: 4px; }
+        .info-field.full { grid-column: 1/-1; }
+        .field-label { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .field-value { font-size: 14px; color: var(--text); padding: 10px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; font-family: 'JetBrains Mono', monospace; }
+        .field-value.empty { color: var(--muted); font-style: italic; }
+        .field-value.sensitive { color: var(--orange); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .masked { letter-spacing: 2px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
         /* Edit form */
-        .form-group { margin-bottom: 18px; }
-
-        label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 8px;
-        }
-
-        input[type="text"],
-        input[type="email"],
-        input[type="tel"] {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            font-size: 16px;
-            color: var(--text);
-            background: var(--bg);
-            outline: none;
-            transition: border-color 0.2s;
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group.full { grid-column: 1/-1; }
+        label { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        input[type="text"], input[type="email"], input[type="tel"] {
+            width: 100%; padding: 12px 16px; border: 2px solid var(--border);
+            border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 15px;
+            color: var(--text); background: var(--bg); outline: none; transition: border-color 0.2s;
         }
         input:focus { border-color: var(--orange); }
         input::placeholder { color: var(--muted); }
-        input:read-only {
-            background: var(--border);
-            color: var(--muted);
-            cursor: not-allowed;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-        }
-
-        .form-hint {
-            font-size: 12px;
-            color: var(--muted);
-            margin-top: 6px;
-        }
+        input[readonly] { background: var(--border); color: var(--muted); cursor: not-allowed; }
+        .form-hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
 
         /* Buttons */
-        .btn-row {
-            display: flex;
-            gap: 12px;
-            margin-top: 8px;
-        }
+        .btn-row { display: flex; gap: 12px; margin-top: 8px; }
+        .btn { padding: 12px 24px; border-radius: 8px; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px; border: none; }
+        .btn-primary { background: var(--orange); color: white; box-shadow: 3px 3px 0 var(--orange-dark); }
+        .btn-primary:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 var(--orange-dark); }
+        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-outline { background: transparent; color: var(--muted); border: 2px solid var(--border); }
+        .btn-outline:hover { border-color: var(--orange); color: var(--orange); }
+        .btn-copy { background: none; border: 1px solid var(--border); color: var(--muted); padding: 4px 10px; border-radius: 6px; font-size: 12px; cursor: pointer; flex-shrink: 0; transition: all 0.2s; }
+        .btn-copy:hover { border-color: var(--orange); color: var(--orange); }
 
-        .btn {
-            padding: 12px 24px;
-            border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: var(--orange);
-            color: white;
-            border: 2px solid var(--orange);
-            box-shadow: 3px 3px 0 var(--orange-dark);
-        }
-        .btn-primary:hover {
-            transform: translate(-1px,-1px);
-            box-shadow: 4px 4px 0 var(--orange-dark);
-        }
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--muted);
-            border: 2px solid var(--border);
-        }
-        .btn-outline:hover { border-color: var(--danger); color: var(--danger); }
-
-        /* Security card */
-        .security-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--border);
-        }
+        /* Security */
+        .security-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border); }
         .security-item:last-child { border-bottom: none; }
-
         .security-info h4 { font-size: 15px; margin-bottom: 4px; }
-        .security-info p  { font-size: 13px; color: var(--muted); }
-
-        .status-badge {
-            font-size: 12px;
-            padding: 4px 10px;
-            border-radius: 999px;
-            font-weight: 600;
-        }
-        .status-ok {
-            background: rgba(34,197,94,0.1);
-            color: var(--success);
-            border: 1px solid rgba(34,197,94,0.3);
-        }
-        .status-warn {
-            background: rgba(249,115,22,0.1);
-            color: var(--orange);
-            border: 1px solid rgba(249,115,22,0.3);
-        }
+        .security-info p { font-size: 13px; color: var(--muted); }
+        .status-badge { font-size: 12px; padding: 4px 10px; border-radius: 999px; font-weight: 600; }
+        .status-ok   { background: rgba(34,197,94,0.1); color: var(--success); border: 1px solid rgba(34,197,94,0.3); }
+        .status-warn { background: rgba(249,115,22,0.1); color: var(--orange); border: 1px solid rgba(249,115,22,0.3); }
 
         /* Spinner */
-        .spinner {
-            width: 18px;
-            height: 18px;
-            border: 2px solid rgba(255,255,255,0.4);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 0.6s linear infinite;
-        }
+        .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
         /* Toast */
-        .toast-container {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            z-index: 999;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .toast {
-            background: var(--card);
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            padding: 14px 18px;
-            font-size: 14px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            min-width: 280px;
-            animation: slideIn 0.3s ease;
-        }
+        .toast-container { position: fixed; top: 80px; right: 20px; z-index: 999; display: flex; flex-direction: column; gap: 8px; }
+        .toast { background: var(--card); border: 2px solid var(--border); border-radius: 8px; padding: 14px 18px; font-size: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; min-width: 280px; animation: slideIn 0.3s ease; }
         .toast.success { border-color: var(--success); }
         .toast.error   { border-color: var(--danger); }
+        @keyframes slideIn { from { transform: translateX(110%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
-        @keyframes slideIn {
-            from { transform: translateX(110%); opacity: 0; }
-            to   { transform: translateX(0); opacity: 1; }
-        }
-
-        footer {
-            text-align: center;
-            padding: 24px;
-            font-size: 13px;
-            color: var(--muted);
-            font-family: 'JetBrains Mono', monospace;
-            border-top: 1px solid var(--border);
-            margin-top: 24px;
-        }
+        footer { text-align: center; padding: 24px; font-size: 13px; color: var(--muted); font-family: 'JetBrains Mono', monospace; border-top: 1px solid var(--border); margin-top: 24px; }
         footer span { color: var(--orange); }
 
         @media (max-width: 640px) {
             .nav-tagline { display: none; }
-            .info-grid { grid-template-columns: 1fr; }
-            .form-grid { grid-template-columns: 1fr; }
-            .info-field.full { grid-column: 1; }
+            .info-grid, .form-grid { grid-template-columns: 1fr; }
+            .info-field.full, .form-group.full { grid-column: 1; }
+            .avatar-section { flex-direction: column; align-items: center; text-align: center; }
             .btn-row { flex-direction: column; }
         }
     </style>
@@ -465,20 +159,33 @@
 
     <div class="page-title">&#128100; My Profile</div>
 
-    <!-- Account Info -->
+    <!-- Account Info Card -->
     <div class="card">
         <div class="card-header">
             <div class="card-title">&#9432; Account Information</div>
         </div>
 
+        <!-- Avatar + name -->
         <div class="avatar-section">
-            <div class="avatar" id="avatarIcon">&#128100;</div>
+            <div class="avatar-wrap">
+                <div class="avatar" id="avatarDisplay">
+                    <span id="avatarEmoji">&#128100;</span>
+                    <img id="avatarImg" src="" alt="" style="display:none;"/>
+                </div>
+                <div class="avatar-upload-btn" onclick="document.getElementById('avatarInput').click()" title="Change avatar">
+                    &#9998;
+                </div>
+                <input type="file" id="avatarInput" accept="image/jpeg,image/png,image/gif"
+                       onchange="uploadAvatar(this.files[0])"/>
+            </div>
             <div class="avatar-info">
                 <h2 id="displayName">Loading...</h2>
                 <div class="role-badge role-user" id="roleBadge">USER</div>
+                <div class="avatar-hint">Click the pencil icon to update your avatar</div>
             </div>
         </div>
 
+        <!-- Info fields -->
         <div class="info-grid">
             <div class="info-field">
                 <div class="field-label">Username</div>
@@ -490,24 +197,31 @@
             </div>
             <div class="info-field">
                 <div class="field-label">Full Name</div>
-                <div class="field-value" id="infoFullName">—</div>
+                <div class="field-value empty" id="infoFullName">Not set</div>
             </div>
             <div class="info-field">
                 <div class="field-label">Company</div>
-                <div class="field-value" id="infoCompany">—</div>
+                <div class="field-value empty" id="infoCompany">Not set</div>
+            </div>
+            <div class="info-field">
+                <div class="field-label">Phone</div>
+                <div class="field-value empty" id="infoPhone">Not set</div>
+            </div>
+            <div class="info-field">
+                <div class="field-label">Role</div>
+                <div class="field-value" id="infoRole">—</div>
             </div>
             <div class="info-field full">
                 <div class="field-label">API Key</div>
-                <div class="field-value sensitive" id="infoApiKey">
-                    <span class="masked" id="apiKeyMasked">••••••••••••••••</span>
+                <div class="field-value sensitive">
+                    <span class="masked" id="apiKeyMasked">&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;</span>
                     <button class="btn-copy" onclick="toggleApiKey()">Show</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Edit Profile -->
-    <!-- CWE-915: Mass Assignment — role field exposed via Burp -->
+    <!-- Edit Profile Card -->
     <div class="card">
         <div class="card-header">
             <div class="card-title">&#9998; Edit Profile</div>
@@ -522,109 +236,91 @@
                 <label>Company</label>
                 <input type="text" id="editCompany" placeholder="Your company"/>
             </div>
-        </div>
-
-        <div class="form-group">
-            <label>Email</label>
-            <input type="email" id="editEmail" placeholder="your@email.com"/>
-        </div>
-
-        <div class="form-group">
-            <label>Phone</label>
-            <input type="tel" id="editPhone" placeholder="+84 xxx xxx xxx"/>
-        </div>
-
-        <div class="form-group">
-            <label>Username</label>
-            <input type="text" id="editUsername" readonly/>
-            <div class="form-hint">Username cannot be changed</div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="editEmail" placeholder="your@email.com"/>
+            </div>
+            <div class="form-group">
+                <label>Phone</label>
+                <input type="tel" id="editPhone" placeholder="+84 xxx xxx xxx"/>
+            </div>
+            <div class="form-group full">
+                <label>Username</label>
+                <input type="text" id="editUsername" readonly/>
+                <div class="form-hint">Username cannot be changed</div>
+            </div>
         </div>
 
         <div class="btn-row">
-            <button class="btn btn-primary" id="saveBtn" onclick="saveProfile()">
-                Save Changes
-            </button>
-            <button class="btn btn-outline" onclick="loadProfile()">
-                Reset
-            </button>
+            <button class="btn btn-primary" id="saveBtn" onclick="saveProfile()">Save Changes</button>
+            <button class="btn btn-outline" onclick="loadProfile()">Reset</button>
         </div>
     </div>
 
-    <!-- Security -->
+    <!-- Security Card -->
     <div class="card">
         <div class="card-header">
             <div class="card-title">&#128274; Security</div>
         </div>
-
         <div class="security-item">
-            <div class="security-info">
-                <h4>Password</h4>
-                <p>Last changed: unknown</p>
-            </div>
+            <div class="security-info"><h4>Password</h4><p>Last changed: unknown</p></div>
             <span class="status-badge status-warn">Update recommended</span>
         </div>
-
         <div class="security-item">
-            <div class="security-info">
-                <h4>Active Session</h4>
-                <p>JWT token — expires in 24 hours</p>
-            </div>
+            <div class="security-info"><h4>Active Session</h4><p>JWT token &mdash; expires in 24 hours</p></div>
             <span class="status-badge status-ok">Active</span>
         </div>
-
         <div class="security-item">
-            <div class="security-info">
-                <h4>API Key</h4>
-                <p>Used for programmatic access to v4nD API</p>
-            </div>
+            <div class="security-info"><h4>API Key</h4><p>Used for programmatic access to v4nD API</p></div>
             <span class="status-badge status-ok">Issued</span>
         </div>
     </div>
 
 </main>
 
-<footer>
-    &copy; 2026 <span>v4nD Tech</span> &middot; All rights reserved
-</footer>
+<footer>&copy; 2026 <span>v4nD Tech</span> &middot; All rights reserved</footer>
 
 <script>
-    const token    = localStorage.getItem('token');
-    const username = localStorage.getItem('username');
-    const role     = localStorage.getItem('role');
+    var token    = localStorage.getItem('token');
+    var username = localStorage.getItem('username');
+    var role     = localStorage.getItem('role');
 
     if (!token) window.location.href = '/index.html';
     if (role === 'ADMIN') document.getElementById('adminLink').style.display = 'flex';
 
-    let fullApiKey = '';
-    let apiKeyVisible = false;
+    var fullApiKey    = '';
+    var apiKeyVisible = false;
+    var currentUserId = null;
 
     async function loadProfile() {
         try {
-            // Find current user id via users list or profile
-            const resp = await fetch('/api/v1/users', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            const users = await resp.json();
-            const me = users.find(function(u) { return u.username === username; });
+            var resp = await fetch('/api/v1/users/me', { headers: { 'Authorization': 'Bearer ' + token }});
+            var me = await resp.json();
 
-            if (!me) return;
-
+            currentUserId = me.id;
             fullApiKey = me.apiKey || '';
 
-            // Avatar + name
-            document.getElementById('avatarIcon').textContent = role === 'ADMIN' ? '🛡️' : '👤';
-            document.getElementById('displayName').textContent = me.username;
+            // Avatar
+            var emoji = role === 'ADMIN' ? '&#128737;' : '&#128100;';
+            document.getElementById('avatarEmoji').innerHTML = emoji;
 
-            const badge = document.getElementById('roleBadge');
+            // Try load saved avatar
+            loadAvatarImage(me.username);
+
+            // Name + role
+            document.getElementById('displayName').textContent = me.username;
+            var badge = document.getElementById('roleBadge');
             badge.textContent = me.role;
             badge.className = 'role-badge ' + (me.role === 'ADMIN' ? 'role-admin' : 'role-user');
 
             // Info fields
-            document.getElementById('infoUsername').textContent  = me.username || '—';
-            document.getElementById('infoEmail').textContent     = me.email || '—';
-            document.getElementById('infoFullName').textContent  = me.fullName || '—';
-            document.getElementById('infoCompany').textContent   = me.company || '—';
-            document.getElementById('apiKeyMasked').textContent  = maskKey(fullApiKey);
+            setField('infoUsername', me.username);
+            setField('infoEmail', me.email);
+            setField('infoFullName', me.fullName, true);
+            setField('infoCompany', me.company, true);
+            setField('infoPhone', me.phone, true);
+            setField('infoRole', me.role);
+            document.getElementById('apiKeyMasked').innerHTML = maskKey(fullApiKey);
 
             // Edit form
             document.getElementById('editUsername').value  = me.username || '';
@@ -638,23 +334,34 @@
         }
     }
 
+    function setField(id, value, nullable) {
+        var el = document.getElementById(id);
+        if (value) {
+            el.textContent = value;
+            el.classList.remove('empty');
+        } else if (nullable) {
+            el.textContent = 'Not set';
+            el.classList.add('empty');
+        } else {
+            el.textContent = value || '—';
+        }
+    }
+
+
     async function saveProfile() {
-        const btn = document.getElementById('saveBtn');
+        var btn = document.getElementById('saveBtn');
         btn.disabled = true;
         btn.innerHTML = '<div class="spinner"></div> Saving...';
 
-        const body = {
+        var body = {
             email:    document.getElementById('editEmail').value.trim(),
             fullName: document.getElementById('editFullName').value.trim(),
             company:  document.getElementById('editCompany').value.trim(),
             phone:    document.getElementById('editPhone').value.trim()
-            // NOTE: role field NOT included here — but Burp can add it!
-            // Try: add "role":"ADMIN" to the request body in Burp
-            // → Mass Assignment (CWE-915) will escalate privileges
         };
 
         try {
-            const resp = await fetch('/api/v1/users/profile', {
+            var resp = await fetch('/api/v1/users/profile', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -663,15 +370,13 @@
                 body: JSON.stringify(body)
             });
 
-            const data = await resp.json();
-
+            var data = await resp.json();
             if (resp.ok) {
-                showToast('Profile updated successfully!', 'success');
-                // Update localStorage role if changed (via Burp exploit)
+                showToast('Profile updated!', 'success');
                 if (data.role && data.role !== role) {
                     localStorage.setItem('role', data.role);
                     showToast('Role changed to ' + data.role + '!', 'success');
-                    setTimeout(function() { window.location.reload(); }, 1500);
+                    setTimeout(function(){ window.location.reload(); }, 1500);
                 }
                 loadProfile();
             } else {
@@ -685,35 +390,99 @@
         }
     }
 
-    function maskKey(key) {
-        if (!key) return '—';
-        return key.substring(0, 8) + '••••••••••••••••';
-    }
+    // Avatar upload
+    async function uploadAvatar(file) {
+        if (!file) return;
+        if (!file.type.startsWith('image/')) {
+            showToast('Only image files allowed', 'error');
+            return;
+        }
 
-    function toggleApiKey() {
-        const el  = document.getElementById('apiKeyMasked');
-        const btn = el.nextElementSibling;
-        apiKeyVisible = !apiKeyVisible;
-        el.textContent = apiKeyVisible ? fullApiKey : maskKey(fullApiKey);
-        btn.textContent = apiKeyVisible ? 'Hide' : 'Show';
-        if (apiKeyVisible) {
-            navigator.clipboard.writeText(fullApiKey).catch(function(){});
-            showToast('API key copied!', 'success');
+        showToast('Uploading avatar...', 'success');
+
+        var fd = new FormData();
+        fd.append('file', file);
+
+        try {
+            var resp = await fetch('/api/v1/avatar', {
+                method: 'POST',
+                headers: { 'Authorization': 'Bearer ' + token },
+                body: fd
+            });
+
+            var data = await resp.json();
+            if (data.success) {
+                showToast('Avatar updated!', 'success');
+                // Preview locally
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('avatarEmoji').style.display = 'none';
+                    var img = document.getElementById('avatarImg');
+                    img.src = e.target.result;
+                    img.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                showToast(data.message || 'Upload failed', 'error');
+            }
+        } catch(e) {
+            showToast('Upload error', 'error');
         }
     }
 
-    function logout() {
-        localStorage.clear();
-        window.location.href = '/index.html';
+    function loadAvatarImage(uname) {
+        // Fetch avatar with auth header then create blob URL
+        var src = '/api/v1/avatar?file=avatar_' + uname + '.jpg';
+        fetch(src, { headers: { 'Authorization': 'Bearer ' + token } })
+            .then(function(r) {
+                if (r.ok) return r.blob();
+                throw new Error('no avatar');
+            })
+            .then(function(blob) {
+                var url = URL.createObjectURL(blob);
+                var img = document.getElementById('avatarImg');
+                document.getElementById('avatarEmoji').style.display = 'none';
+                img.src = url;
+                img.style.display = 'block';
+            })
+            .catch(function(){
+                // No avatar yet — show emoji default
+                document.getElementById('avatarEmoji').style.display = 'flex';
+                document.getElementById('avatarImg').style.display = 'none';
+            });
     }
 
+    // API key toggle
+    function maskKey(key) {
+        if (!key) return '&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;';
+        return key.substring(0, 8) + '&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;';
+    }
+
+    function toggleApiKey() {
+        var el  = document.getElementById('apiKeyMasked');
+        var btn = el.nextElementSibling;
+        apiKeyVisible = !apiKeyVisible;
+        if (apiKeyVisible) {
+            el.textContent = fullApiKey || '—';
+            btn.textContent = 'Hide';
+            if (fullApiKey) {
+                navigator.clipboard.writeText(fullApiKey).catch(function(){});
+                showToast('API key copied!', 'success');
+            }
+        } else {
+            el.innerHTML = maskKey(fullApiKey);
+            btn.textContent = 'Show';
+        }
+    }
+
+    function logout() { localStorage.clear(); window.location.href = '/index.html'; }
+
     function showToast(msg, type) {
-        type = type || 'success';
-        const el = document.createElement('div');
-        el.className = 'toast ' + type;
-        el.innerHTML = '<span>' + (type === 'success' ? '&#10003;' : '&#10007;') + '</span><span>' + msg + '</span>';
+        var el = document.createElement('div');
+        el.className = 'toast ' + (type||'success');
+        el.innerHTML = '<span>' + (type==='error'?'&#10007;':'&#10003;') + '</span><span>' + msg + '</span>';
         document.getElementById('toastContainer').appendChild(el);
-        setTimeout(function() { el.remove(); }, 3500);
+        setTimeout(function(){ el.remove(); }, 3500);
     }
 
     loadProfile();

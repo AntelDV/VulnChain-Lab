@@ -58,9 +58,6 @@ public class DataSeeder implements CommandLineRunner {
         productRepository.save(new Product(null, "WiFi 6E Access Point", "Tri-band wireless AP for enterprise environments", 399.0, "Network", "Network", 100));
 
         System.out.println("=== VulnChain Lab: Data seeded successfully! ===");
-        System.out.println("Admin: admin / admin123");
-        System.out.println("User:  duong / duong123");
-
     }
 
 }

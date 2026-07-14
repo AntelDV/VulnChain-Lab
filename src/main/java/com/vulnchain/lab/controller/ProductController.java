@@ -36,4 +36,39 @@ public class ProductController {
     public ResponseEntity<Product> getProduct ( @PathVariable Long id) {
         return productRepository.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
+
+    @PostMapping
+    public ResponseEntity<?> addProduct(@RequestBody Product product) {
+        try {
+            Product saved = productRepository.save(product);
+            return ResponseEntity.status(201).body(saved);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(
+                    java.util.Map.of("error", e.getMessage())
+            );
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable Long id) {
+        if (!productRepository.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        productRepository.deleteById(id);
+        return ResponseEntity.ok(java.util.Map.of("message", "Product deleted"));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateProduct(@PathVariable Long id,
+                                           @RequestBody Product request) {
+        return productRepository.findById(id).map(product -> {
+            if (request.getName() != null) product.setName(request.getName());
+            if (request.getDescription() != null) product.setDescription(request.getDescription());
+            if (request.getPrice() != null) product.setPrice(request.getPrice());
+            if (request.getSearchTag() != null) product.setSearchTag(request.getSearchTag());
+            if (request.getCategory() != null) product.setCategory(request.getCategory());
+            if (request.getStock() != null) product.setStock(request.getStock());
+            return ResponseEntity.ok(productRepository.save(product));
+        }).orElse(ResponseEntity.notFound().build());
+    }
 }

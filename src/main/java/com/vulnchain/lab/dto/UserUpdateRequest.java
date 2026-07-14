@@ -8,4 +8,7 @@ public class UserUpdateRequest {
     private String username;
     private String role;
     private String apiKey;
+    private String fullName;
+    private String phone;
+    private String company;
 }

@@ -11,6 +11,7 @@ services:
       - "3307:3306"
     volumes:
       - vulnchain_data:/var/lib/mysql
+      - uploads_data:/usr/local/tomcat/webapps/ROOT/uploads
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uvulnuser", "-pvulnpass123"]
@@ -37,3 +38,4 @@ services:
 
 volumes:
   vulnchain_data:
+  uploads_data:

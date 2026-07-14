@@ -6,6 +6,7 @@ import com.vulnchain.lab.model.User;
 import com.vulnchain.lab.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,85 +14,67 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
+
     private final UserRepository userRepository;
 
-    // No ownership validation
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> getMe(Authentication auth) {
+        User user = userRepository.findByUsername(auth.getName()).orElse(null);
+        if (user == null) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(toResponse(user));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+        User user = userRepository.findById(id).orElse(null);
+        if (user == null) return ResponseEntity.notFound().build();
+        // No check if caller owns this resource
+        return ResponseEntity.ok(toResponse(user));
+    }
+
     @GetMapping("/{id}/profile")
     public ResponseEntity<UserResponse> getUserProfile(@PathVariable Long id) {
-        User user = userRepository.findById(id).orElse(null);
-
-        if ( user == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        // Return full profile including sensitive apiKey
-        return ResponseEntity.ok(new UserResponse(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getRole().name(),
-                user.getApiKey()
-        ));
+        return getUserById(id);
     }
 
-    /*
-     * CWE-285: Improper Authorization
-     * Get all users — admin only
-     * But no role check → any authenticated user can call
-     */
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> getAllUsers() {
-        return ResponseEntity.ok(
-                userRepository.findAll().stream().map(u -> new UserResponse(
-                        u.getId(),
-                        u.getUsername(),
-                        u.getEmail(),
-                        u.getRole().name(),
-                        u.getApiKey()
-                        )
-                ).toList()
-        );
+        return ResponseEntity.ok( userRepository.findAll().stream().map(this::toResponse).toList());
     }
+
 
     @PutMapping("/profile")
-    public ResponseEntity<?> updateProfile (@RequestBody UserUpdateRequest request, Authentication auth) {
-        String username = auth.getName();
-        User user = userRepository.findByUsername(username).orElse(null);
+    public ResponseEntity<?> updateProfile(@RequestBody UserUpdateRequest request,
+                                           Authentication auth) {
+        User user = userRepository.findByUsername(auth.getName()).orElse(null);
+        if (user == null) return ResponseEntity.notFound().build();
 
-        if (user == null) {
-            return ResponseEntity.notFound().build();
-        }
+        if (request.getEmail()    != null) user.setEmail(request.getEmail());
+        if (request.getUsername() != null) user.setUsername(request.getUsername());
+        if (request.getFullName() != null) user.setFullName(request.getFullName());
+        if (request.getCompany()  != null) user.setCompany(request.getCompany());
+        if (request.getPhone()    != null) user.setPhone(request.getPhone());
 
-        if (request.getEmail() != null) {
-            user.setEmail(request.getEmail());
-        }
-
-        if ( request.getUsername() != null) {
-            user.setUsername(request.getUsername());
-        }
-
+        // No check on role field
         if (request.getRole() != null) {
             try {
                 user.setRole(User.Role.valueOf(request.getRole().toUpperCase()));
-            } catch (IllegalArgumentException e) {
-            }
+            } catch (IllegalArgumentException e) {}
         }
 
-        if (request.getApiKey() != null) {
-            user.setApiKey(request.getApiKey());
-        }
+        if (request.getApiKey() != null) user.setApiKey(request.getApiKey());
 
         userRepository.save(user);
-
-        return ResponseEntity.ok(new UserResponse(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getRole().name(),
-                user.getApiKey()
-        ));
+        return ResponseEntity.ok(toResponse(user));
     }
 
-
-
+    // Helper
+    private UserResponse toResponse(User u) {
+        return new UserResponse(
+                u.getId(), u.getUsername(), u.getEmail(),
+                u.getRole().name(), u.getApiKey(),
+                u.getFullName(), u.getCompany(), u.getPhone()
+        );
+    }
 }
